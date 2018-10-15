@@ -4,6 +4,8 @@ import PostSection from './components/PostSection.jsx';
 import Signup from './components/Signup.jsx';
 import CreateSection from './components/CreateSection.jsx';
 
+import LogInSignUp from './components/LogInSignUp.jsx';
+
 class App extends Component {
   constructor(props) {
     super(props);
@@ -27,18 +29,18 @@ class App extends Component {
   }
   changeStatus(userId, postStatus, postId) {
     fetch('http://localhost:3000/status', {
-      headers: {'Content-Type': 'application/json'},
-      method:'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      method: 'PATCH',
       body: JSON.stringify({
         status: postStatus,
         postid: postId,
         userid: userId,
       })
     })
-    .then(()=> {
-      this.fetchData();
-    })
-    .catch(err => console.log(err));
+      .then(() => {
+        this.fetchData();
+      })
+      .catch(err => console.log(err));
   }
 
   onSignupChangedHandler(event) {
@@ -62,7 +64,7 @@ class App extends Component {
         name: this.state.name,
         role: this.state.role,
       }),
-      headers: {'Content-Type': 'application/json'},
+      headers: { 'Content-Type': 'application/json' },
     })
       .then(data => data.json())
       .then(data => {
@@ -87,50 +89,53 @@ class App extends Component {
     const closed = [];
     fetch('http://localhost:3000/home', {
       method: 'GET',
-      headers: {'Content-Type': 'application/json'},
+      headers: { 'Content-Type': 'application/json' },
     })
-    .then(posts => posts.json())
-    .then(posts => {
-      posts.forEach((post) => {
-        console.log(post);
-        if (post.status === 'open') {
-          notStarted.push(post)
-        }
-        if (post.status === 'claimed') {
-          inProgress.push(post)
-        }
-        if (post.status === 'closed') {
-          closed.push(post)
-        }
+      .then(posts => posts.json())
+      .then(posts => {
+        posts.forEach((post) => {
+          console.log(post);
+          if (post.status === 'open') {
+            notStarted.push(post)
+          }
+          if (post.status === 'claimed') {
+            inProgress.push(post)
+          }
+          if (post.status === 'closed') {
+            closed.push(post)
+          }
+        })
+        const newState = Object.assign({}, this.state);
+        newState.notStarted = notStarted;
+        newState.inProgress = inProgress;
+        newState.closed = closed;
+        this.setState(newState);
       })
-      const newState = Object.assign({}, this.state);
-      newState.notStarted = notStarted;
-      newState.inProgress = inProgress;
-      newState.closed = closed;
-      this.setState(newState);
-    })
-    .catch((err) => {
-      console.log(err);
-    })
+      .catch((err) => {
+        console.log(err);
+      })
   }
   render() {
     const { name, notStarted, inProgress, closed, role, loggedIn, userid } = this.state;
     let render = [];
     if (loggedIn) render.push(<div>
-                                <CreateSection userid = {userid} fetchData = {this.fetchData} />
-                                <PostSection changeStatus = {this.changeStatus} name={name} notStarted={notStarted} inProgress={inProgress} closed={closed} role={role} />
-                              </div>);
+      <CreateSection userid={userid} fetchData={this.fetchData} />
+      <PostSection changeStatus={this.changeStatus} name={name} notStarted={notStarted} inProgress={inProgress} closed={closed} role={role} />
+    </div>);
     return (
       <div>
-        <Signup
-          onSignupSubmitHandler={this.onSignupSubmitHandler}
-          onSignupNameChangedHandler={this.onSignupNameChangeHandler}
-          onSignupChangedHandler={this.onSignupChangedHandler}
-        />
-        {render}
+        <LogInSignUp />
       </div>
     );
   }
 }
 
 export default App;
+/*
+<Signup
+onSignupSubmitHandler={this.onSignupSubmitHandler}
+onSignupNameChangedHandler={this.onSignupNameChangeHandler}
+onSignupChangedHandler={this.onSignupChangedHandler}
+/>
+{render}
+*/
