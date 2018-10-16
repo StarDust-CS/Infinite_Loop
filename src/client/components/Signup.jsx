@@ -17,7 +17,7 @@ const Signup = (props) => {
         </div>
         <input className="main-login-button" type="submit" value="Log In" />
         <span className="main-login-forgot-pass">Forgot your password?</span>
-        <span className="main-login-register">Create an Account</span>
+        <span className="main-login-register" onClick={() => showForm('register')}>Create an Account</span>
 
         {/* <label>User: </label><input onChange = {props.onSignupNameChangedHandler} type="text" placeholder="First Name"/>
         
@@ -37,4 +37,5 @@ const Signup = (props) => {
     </div>
   );
 };
+
 export default Signup;

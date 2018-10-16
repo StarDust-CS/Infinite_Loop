@@ -1,46 +1,65 @@
+const bcrypt = require('bcrypt');
 const db = require('../postgresql.js');
+
+const SALT_WORK_FACTOR = 10;
 
 module.exports = {
   /**
-    * creates new user record and returns the created record
-    * @param { Object } req request object 
+    * creates new user record
+    * @param { Object } req request object
     * @param { object } res response object
-    * @param { function } next function to go to next middlewear 
+    * @param { function } next function to go to next middleware
     */
+
   createUser(req, res, next) {
-    //check request has correct body format
-    if (Object.keys(req.body).length === 2 && req.body.name && req.body.role) {
-      //if role equals to user, create user 
-      if (req.body.role === 'student') {
-        db.one("INSERT INTO student(name) VALUES ($1) RETURNING *", req.body.name)
-          .then(data => {
-            res.locals.data = data;
-            return next();
-          })
-          .catch(err => {
-            console.log('ERROR: ', err)
-            return next(err);
-          });
-      } else {
-        // if not user create helper
-        db.one("INSERT INTO helper(name) VALUES ($1) RETURNING *", req.body.name)
-          .then(data => {
-            res.locals.data = data;
-            return next();
-          })
-          .catch(err => {
-            console.log('ERROR: ', err)
-            return next(err);
-          });
-      }
+    const userInfo = req.body;
+    const {
+      firstName,
+      lastName,
+      email,
+      password,
+      cohort,
+      role,
+    } = userInfo;
 
-    } else {
-      return res.status(400).send();
-    }
+    const userInputs = [firstName, lastName, email, password, cohort, role];
 
+    const addNewUser = () => {
+      db.one('INSERT INTO users("first_name", "last_name", "email", "password", "cohort", "role") VALUES($1, $2, $3, $4, $5, $6)', userInputs)
+        .then((data) => {
+          res.locals.newUser = data;
+          return next();
+        })
+        .catch(err => console.error(err));
+    };
+
+    bcrypt.genSalt(SALT_WORK_FACTOR)
+      .then(salt => bcrypt.hash(password, salt))
+      .then((hash) => { userInputs[3] = hash; })
+      .then(() => addNewUser())
+      .catch(err => console.error(err));
   },
+
   /**
-   * Checks to see if user is in the database, if not calls createUser()
+ * Checks to see if user exists in the database
+ * @param {Object} req - request object
+ * @param {Object} res - response object
+ * @param {Function} next - passes req and res to the next middleware
+ */
+
+  checkEmailExists(req, res, next) {
+    const { email } = req.body;
+
+    db.any('SELECT * FROM users where email=$1', [email])
+      .then((data) => {
+        if (data[0]) res.send({ msg: 'email already exists' });
+        else return next();
+      })
+      .catch(err => console.error(err));
+  },
+
+  /**
+   * Checks to see if user email/pass combo is valid
    * @param {Object} req - request object
    * @param {Object} res - response object
    * @param {Function} next - passes req and res to the next middleware
@@ -48,26 +67,16 @@ module.exports = {
 
   verifyUser(req, res, next) {
     const { email, password } = req.body;
-    db.query('SELECT * FROM users WHERE email = $1', [email])
-      // .then(data => data.json())
-      .then(data => console.log(data)) //data[0]
-      .then(data => res.status(200).send(`${data} found successfully`))
-      .catch(err => console.log(err));
-  },
+    const userInputs = [email, password];
 
-  // verifyUser(req, res, next) {
-  //   db.any('SELECT name FROM student WHERE name = $1', req.body.name)
-  //   .then((data) => {
-  //     if(data.length === 0) {
-  //       return next();
-  //     } else{
-  //       res.locals.data = data;
-  //       return next();
-  //     }
-  //   })
-  //   .catch((err) => {
-  //     console.log('ERROR: ', err)
-  //     next(err);
-  //   })
-  // },
+    db.any('SELECT * FROM users WHERE email=$1', userInputs)
+      .then((data) => {
+        const user = data[0];
+        bcrypt.compare(password, user.password, (error, resolve) => {
+          if (resolve) return next();
+          return res.status(400).send({ msg: 'incorrect password' });
+        });
+      })
+      .catch(err => console.error(err));
+  },
 };
