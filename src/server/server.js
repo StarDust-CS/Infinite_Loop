@@ -8,13 +8,20 @@ const postController = require('./controller/postController');
 
 app.use(bodyParser.json());
 
+app.get('/login', (req, res) => {
+  res.status(200).send('now in GET /login');
+});
+
 app.post('/login',
   userController.verifyUser,
+  (req, res) => {
+    res.status(200).send('Successful login');
+  },
 );
 
-app.post('signup',
+app.post('/signup',
   userController.verifyUser,
-  
+
 );
 
 // app.post('/createuser',
