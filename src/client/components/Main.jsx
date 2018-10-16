@@ -5,12 +5,13 @@ import RegisterFormComponent from './RegisterFormComponent.jsx';
 import Signup from './Signup.jsx';
 
 const Main = (props) => {
-  const { formDisplay, formPage, logInFormFields, onSignupSubmitHandler, onSignupNameChangeHandler, onSignupChangedHandler, registerFormFields, showForm, submitRegister, updateLogInForm, updateRegisterForm } = props;
+  const { formDisplay, formPage, logInFormFields, onSignupSubmitHandler, onSignupNameChangeHandler, onSignupChangedHandler, registerFormFields, showForm, submitLogIn, submitRegister, updateLogInForm, updateRegisterForm } = props;
   const display = [];
   if (formDisplay === 'login') {
     display.push(<LogInFormComponent
       logInFormFields={logInFormFields}
       showForm={showForm}
+      submitLogIn={submitLogIn}
       updateLogInForm={updateLogInForm}
     />);
   } else if (formDisplay === 'register') {
