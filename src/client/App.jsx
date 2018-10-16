@@ -20,15 +20,18 @@ const blankRegisterForm = {
   code: '',
 };
 
+// Blank LogIn Form
+const blankLogInForm = {
+  email: '',
+  password: '',
+  remember: true,
+};
+
 class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      logInFormFields: {
-        email: '',
-        password: '',
-        remember: true,
-      },
+      logInFormFields: blankLogInForm,
       registerFormFields: blankRegisterForm,
       formDisplay: 'login',
       formPage: 1,
@@ -48,6 +51,7 @@ class App extends Component {
     this.onSignupChangedHandler = this.onSignupChangedHandler.bind(this);
     this.onSignupNameChangeHandler = this.onSignupNameChangeHandler.bind(this);
     this.onSignupSubmitHandler = this.onSignupSubmitHandler.bind(this);
+    this.submitLogIn = this.submitLogIn.bind(this);
     this.submitRegister = this.submitRegister.bind(this);
     this.updateLogInForm = this.updateLogInForm.bind(this);
     this.updateRegisterForm = this.updateRegisterForm.bind(this);
@@ -94,13 +98,31 @@ class App extends Component {
       .catch(err => console.error(err));
   }
 
+  // Handler for login form submission
+  submitLogIn() {
+    const { logInFormFields } = this.state;
+    console.log(logInFormFields);
+    fetch('/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json; charset=utf-8',
+      },
+      body: JSON.stringify(logInFormFields),
+    })
+      .then(data => data.json())
+      .then(data => console.log(data))
+      .then(data => this.setState({
+        logInFormFields: blankLogInForm,
+      }))
+      .catch(err => console.error(err));
+  }
+
   // Handler for registraiton form submission
   submitRegister(event) {
     if (event.target.value === 'Continue') {
       this.setState({ formPage: 2 });
     } else if (event.target.value === 'Submit') {
       const { registerFormFields } = this.state;
-      console.log(registerFormFields);
       fetch('/signup', {
         method: 'POST',
         headers: {
@@ -125,14 +147,18 @@ class App extends Component {
 
   // Handler to update state if user fills in login form
   updateLogInForm(event) {
-    const logInFormFields = this.state;
+    const { logInFormFields } = this.state;
     const { email, password, remember } = logInFormFields;
     const newLogInFormFields = {
       email,
       password,
       remember,
     };
-    newLogInFormFields[event.target.name] = event.target.value;
+    if (event.target.name === 'remember') {
+      newLogInFormFields[event.target.name] = event.target.checked;
+    } else {
+      newLogInFormFields[event.target.name] = event.target.value;
+    }
     this.setState({ logInFormFields: newLogInFormFields });
   }
 
@@ -153,7 +179,6 @@ class App extends Component {
     newRegisterFormFields[event.target.name] = event.target.value;
     this.setState({ registerFormFields: newRegisterFormFields });
   }
-
 
   // PATCH updates to post database
   changeStatus(userId, postStatus, postId) {
@@ -221,6 +246,7 @@ class App extends Component {
           logInFormFields={logInFormFields}
           registerFormFields={registerFormFields}
           showForm={this.showForm}
+          submitLogIn={this.submitLogIn}
           submitRegister={this.submitRegister}
           updateLogInForm={this.updateLogInForm}
           updateRegisterForm={this.updateRegisterForm}
