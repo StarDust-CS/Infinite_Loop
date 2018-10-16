@@ -123,8 +123,9 @@ class App extends Component {
 
   // Handler for login form submission
   submitLogIn() {
-    const { logInFormFields } = this.state;
-    fetch('/login', {
+    const { logInFormFields, userInfo } = this.state;
+    const { loggedIn, firstName, lastName, role, userID } = userInfo;
+    fetch('http://localhost:3000/login', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json; charset=utf-8',
@@ -132,11 +133,18 @@ class App extends Component {
       body: JSON.stringify(logInFormFields),
     })
       .then(data => data.json())
-      .then(data => console.log(data))
-      .then(data => this.setState({
-        formDisplay: defaultFormDisplay,
-        logInFormFields: blankLogInForm,
-      }))
+      .then((data) => {
+        const newUserInfo = { loggedIn: true };
+        newUserInfo.firstName = data.firstName;
+        newUserInfo.lastName = data.lastName;
+        newUserInfo.role = data.role;
+        newUserInfo.userID = data._id;
+        this.setState({
+          formDisplay: defaultFormDisplay,
+          logInFormFields: blankLogInForm,
+          userInfo: newUserInfo,
+        });
+      })
       .catch(err => console.error(err));
   }
 
