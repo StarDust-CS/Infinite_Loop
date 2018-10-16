@@ -9,6 +9,13 @@ import CreateSection from './components/CreateSection.jsx';
 // Import App Styling
 import './App.css';
 
+// Blank LogIn Form
+const blankLogInForm = {
+  email: '',
+  password: '',
+  remember: true,
+};
+
 // Blank Registration Form
 const blankRegisterForm = {
   cohort: 0,
@@ -20,11 +27,40 @@ const blankRegisterForm = {
   code: '',
 };
 
-// Blank LogIn Form
-const blankLogInForm = {
-  email: '',
-  password: '',
-  remember: true,
+// Blank Ticket Form
+const blankTicketForm = {
+  createdAt: Date.now(),
+  studentID: 0,
+  status: 'Open',
+  category: '',
+  title: '',
+  problem: '',
+  expect: '',
+  tried: '',
+  hypo: '',
+};
+
+// Pre-LogIn Blank User
+const blankUser = {
+  loggedIn: false,
+  firstName: '',
+  lastName: '',
+  role: '',
+  userID: 0,
+};
+
+// Pre-LogIn Blank Ticket Array
+const blankTicketDisplay = {
+  notStarted: [],
+  inProgress: [],
+  closed: [],
+};
+
+// Pre-LogIn Form Display (default: show page 1 of login form)
+const defaultFormDisplay = {
+  showForm: true,
+  formName: 'login',
+  formPage: 1,
 };
 
 class App extends Component {
@@ -33,15 +69,10 @@ class App extends Component {
     this.state = {
       logInFormFields: blankLogInForm,
       registerFormFields: blankRegisterForm,
-      formDisplay: 'login',
-      formPage: 1,
-      // name: '',
-      notStarted: [],
-      inProgress: [],
-      closed: [],
-      loggedIn: false,
-      // role: '',
-      // userid: 0,
+      ticketFormFields: blankTicketForm,
+      userInfo: blankUser,
+      ticketDisplay: blankTicketDisplay,
+      formDisplay: defaultFormDisplay,
     };
 
     this.changeStatus = this.changeStatus.bind(this);
@@ -49,27 +80,19 @@ class App extends Component {
     this.showForm = this.showForm.bind(this);
     this.onLoginHandler = this.onLoginHandler.bind(this);
     this.onSignupChangedHandler = this.onSignupChangedHandler.bind(this);
-    this.onSignupNameChangeHandler = this.onSignupNameChangeHandler.bind(this);
     this.onSignupSubmitHandler = this.onSignupSubmitHandler.bind(this);
     this.submitLogIn = this.submitLogIn.bind(this);
     this.submitRegister = this.submitRegister.bind(this);
+    this.submitTicket = this.submitTicket.bind(this);
     this.updateLogInForm = this.updateLogInForm.bind(this);
     this.updateRegisterForm = this.updateRegisterForm.bind(this);
-  }
-
-  // Handler to update state as user fills in sign-in form name
-  onSignupNameChangeHandler(event) {
-    const newState = Object.assign({}, this.state);
-    newState.name = event.target.value;
-    console.log(newState.name);
-    this.setState(newState);
+    this.updateTicketForm = this.updateTicketForm.bind(this);
   }
 
   // Handler to update state as user fills in sign-in form role
   onSignupChangedHandler(event) {
     const newState = Object.assign({}, this.state);
     newState.role = event.currentTarget.value;
-    console.log(newState.role);
     this.setState(newState);
   }
 
@@ -100,9 +123,9 @@ class App extends Component {
 
   // Handler for login form submission
   submitLogIn() {
-    const { logInFormFields } = this.state;
-    console.log(logInFormFields);
-    fetch('/login', {
+    const { logInFormFields, userInfo } = this.state;
+    const { loggedIn, firstName, lastName, role, userID } = userInfo;
+    fetch('http://localhost:3000/login', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json; charset=utf-8',
@@ -110,17 +133,28 @@ class App extends Component {
       body: JSON.stringify(logInFormFields),
     })
       .then(data => data.json())
-      .then(data => console.log(data))
-      .then(data => this.setState({
-        logInFormFields: blankLogInForm,
-      }))
+      .then((data) => {
+        const newUserInfo = { loggedIn: true };
+        newUserInfo.firstName = data.firstName;
+        newUserInfo.lastName = data.lastName;
+        newUserInfo.role = data.role;
+        newUserInfo.userID = data._id;
+        this.setState({
+          formDisplay: defaultFormDisplay,
+          logInFormFields: blankLogInForm,
+          userInfo: newUserInfo,
+        });
+      })
       .catch(err => console.error(err));
   }
 
   // Handler for registraiton form submission
   submitRegister(event) {
+    const { formDisplay } = this.state;
     if (event.target.value === 'Continue') {
-      this.setState({ formPage: 2 });
+      const newFormDisplay = { ...formDisplay };
+      newFormDisplay.formPage += 1;
+      this.setState({ formDisplay: newFormDisplay });
     } else if (event.target.value === 'Submit') {
       const { registerFormFields } = this.state;
       fetch('http://localhost:3000/signup', {
@@ -132,28 +166,47 @@ class App extends Component {
       })
         .then(data => data.json())
         .then(data => console.log(data))
-        .then(data => this.setState({
-          formPage: 1,
-          registerFormFields: blankRegisterForm,
-        }))
+        .then(data => this.setState({ formDisplay: defaultFormDisplay }))
         .catch(err => console.error(err));
+    }
+  }
+
+  submitTicket(event) {
+    const { formDisplay, ticketFormFields } = this.state;
+    console.log(ticketFormFields);
+    if (event.target.value === 'Continue') {
+      const newFormDisplay = { ...formDisplay };
+      const newFormFields = { ...ticketFormFields };
+      newFormDisplay.formPage += 1;
+      newFormFields.createdAt = Date.now();
+      this.setState({ formDisplay: newFormDisplay, ticketFormFields: newFormFields });
+    } else if (event.target.value === 'Submit') {
+      this.setState({ formDisplay: defaultFormDisplay, ticketFormFields: blankTicketForm });
     }
   }
 
   // Handler to show registration form
   showForm(event) {
-    this.setState({ formDisplay: event.target.value });
+    const { ticketFormFields, userInfo } = this.state;
+    const newTicketFormFields = { ...ticketFormFields };
+    const newFormDisplay = {
+      showForm: true,
+      formName: event.target.value,
+      formPage: 1,
+    };
+    if (event.target.value === 'ticket') {
+      newTicketFormFields.studentID = userInfo.userID;
+    }
+    this.setState({
+      formDisplay: newFormDisplay,
+      ticketFormFields: newTicketFormFields,
+    });
   }
 
   // Handler to update state if user fills in login form
   updateLogInForm(event) {
     const { logInFormFields } = this.state;
-    const { email, password, remember } = logInFormFields;
-    const newLogInFormFields = {
-      email,
-      password,
-      remember,
-    };
+    const newLogInFormFields = { ...logInFormFields };
     if (event.target.name === 'remember') {
       newLogInFormFields[event.target.name] = event.target.checked;
     } else {
@@ -164,20 +217,20 @@ class App extends Component {
 
   updateRegisterForm(event) {
     const { registerFormFields } = this.state;
-    const {
-      cohort, firstName, lastName, email, password, role, code,
-    } = registerFormFields;
-    const newRegisterFormFields = {
-      cohort,
-      firstName,
-      lastName,
-      email,
-      password,
-      role,
-      code,
-    };
-    newRegisterFormFields[event.target.name] = event.target.value;
+    const newRegisterFormFields = { ...registerFormFields };
+    if (event.target.name === 'cohort') {
+      newRegisterFormFields[event.target.name] = Number(event.target.value);
+    } else {
+      newRegisterFormFields[event.target.name] = event.target.value;
+    }
     this.setState({ registerFormFields: newRegisterFormFields });
+  }
+
+  updateTicketForm(event) {
+    const { ticketFormFields } = this.state;
+    const newTicketFormFields = { ...ticketFormFields };
+    newTicketFormFields[event.target.name] = event.target.value;
+    this.setState({ ticketFormFields: newTicketFormFields });
   }
 
   // PATCH updates to post database
@@ -207,7 +260,6 @@ class App extends Component {
       .then(posts => posts.json())
       .then((posts) => {
         posts.forEach((post) => {
-          console.log(post);
           if (post.status === 'open') {
             notStarted.push(post);
           }
@@ -229,7 +281,7 @@ class App extends Component {
 
   render() {
     const {
-      name, notStarted, formDisplay, inProgress, closed, role, loggedIn, userid, logInFormFields, registerFormFields, formPage,
+      name, notStarted, formDisplay, inProgress, closed, role, loggedIn, userInfo, logInFormFields, registerFormFields, formPage, ticketFormFields,
     } = this.state;
     const render = [];
     if (loggedIn) render.push(
@@ -239,17 +291,22 @@ class App extends Component {
       </div>);
     return (
       <div className="app-container">
-        <Header />
+        <Header
+          showForm={this.showForm}
+        />
         <Main
           formDisplay={formDisplay}
-          formPage={formPage}
           logInFormFields={logInFormFields}
           registerFormFields={registerFormFields}
+          ticketFormFields={ticketFormFields}
+          userInfo={userInfo}
           showForm={this.showForm}
           submitLogIn={this.submitLogIn}
           submitRegister={this.submitRegister}
+          submitTicket={this.submitTicket}
           updateLogInForm={this.updateLogInForm}
           updateRegisterForm={this.updateRegisterForm}
+          updateTicketForm={this.updateTicketForm}
         />
         {render}
       </div>

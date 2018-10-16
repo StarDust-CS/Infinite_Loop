@@ -22,7 +22,16 @@ header {
   z-index: 1;
 
   display: flex;
+  justify-content: space-between;
+}
+
+.header-cs-logo-container {
+  height: 60px;
+  width: 270px;
+
+  display: flex;
   align-items: center;
+  justify-content: center;
 }
 
 .header-cs-logo-img {
@@ -38,6 +47,24 @@ header {
 .header-cs-logo-text {
   font-weight: bold;
   margin: 5px;
+}
+
+.header-add-ticket-button-container {
+  height: 60px;
+  width: 80px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.header-add-ticket-button {
+  background: #1CA4E7;
+  border: none;
+  color: white;
+  font-size: 48px;
+  height: 50px;
+  width: 50px;
 }
 
 main {
@@ -79,6 +106,11 @@ main {
   flex-direction: column;
 }
 
+.main-form-buffer {
+  width: 100%;
+  height: 5vh;
+}
+
 .main-form-field {
   background: none;
   border: 0;
@@ -89,6 +121,19 @@ main {
   outline: none;
   padding: 10px;
   width: 80%;
+}
+
+.main-form-textarea {
+  background: none;
+  border: 1px solid #AAAAAA;
+  box-sizing: border-box;
+  box-shadow: 0px 3px 5px rgba(100, 100, 100, 0.49);
+  font-size: 14px;
+  margin: 2vh 0 2vh 0;
+  outline: none;
+  padding: 10px;
+  width: 80%;
+  height: 200px;
 }
 
 .main-form-field-rc-container {
@@ -147,6 +192,14 @@ main {
   font-size: 16px;
   font-weight: bold;
   padding: 4vh 0 4vh 0;
+}
+
+.main-ticket-span-title {
+  font-weight: bold;
+}
+
+.main-ticket-span-body {
+
 }
 
 /* Log In and Registration -- Phone Portrait */
