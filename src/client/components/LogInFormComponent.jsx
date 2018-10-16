@@ -26,11 +26,11 @@ const LogInFormComponent = (props) => {
 };
 
 LogInFormComponent.propTypes = {
-  // logInFormFields: PropTypes.shape({
-  //   email: PropTypes.string.isRequired,
-  //   password: PropTypes.string.isRequired,
-  //   remember: PropTypes.bool.isRequired,
-  // }).isRequired,
+  logInFormFields: PropTypes.shape({
+    email: PropTypes.string.isRequired,
+    password: PropTypes.string.isRequired,
+    remember: PropTypes.bool.isRequired,
+  }).isRequired,
   showForm: PropTypes.func.isRequired,
   submitLogIn: PropTypes.func.isRequired,
   updateLogInForm: PropTypes.func.isRequired,

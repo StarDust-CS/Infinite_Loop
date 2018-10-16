@@ -2,12 +2,18 @@ import React from 'react';
 
 import csLogoURL from "../../../images/codesmith-logo.svg";
 
-const Header = () => {
+const Header = (props) => {
+  const { showForm } = props;
   return (
     <header>
-      <img className="header-cs-logo-img" src={csLogoURL} alt="CodeSmith Logo" />
-      <span className="header-cs-logo-break">|</span>
-      <span className="header-cs-logo-text">Help Desk</span>
+      <div className="header-cs-logo-container">
+        <img className="header-cs-logo-img" src={csLogoURL} alt="CodeSmith Logo" />
+        <span className="header-cs-logo-break">|</span>
+        <span className="header-cs-logo-text">Help Desk</span>
+      </div>
+      <div className="header-add-ticket-button-container">
+        <button className="header-add-ticket-button" onClick={showForm} type="button" value="ticket">+</button>
+      </div>
     </header>
   );
 };
