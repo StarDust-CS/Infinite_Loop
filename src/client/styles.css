@@ -1,3 +1,8 @@
+h2{
+  font-weight: 700;
+  font-size: 16px
+}
+
 .postContainer{
   height: 700px;
   width: 90%;
@@ -20,7 +25,4 @@
   background-color: rgb(185, 185, 185);
   box-shadow: 3px 6px #888888;
 }
-h2{
-  font-weight: 700;
-  font-size: 16px
-}
+
