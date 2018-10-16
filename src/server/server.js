@@ -26,7 +26,7 @@ app.post('/login',
   // set ssid
   // set cookie
   (req, res) => {
-    res.status(200).send({ msg: 'you logged in' });
+    res.status(200).json(res.locals.verifiedUser);
     // res.render(/* Path to user dashboard page */);
   });
 
@@ -36,32 +36,9 @@ app.post('/signup',
   // set ssid
   // set cookie
   (req, res) => {
-    res.status(200).send({ msg: 'signed up ok' });
-    //res.render(/* Path to main dashboard page */);
+    res.status(200).json({ msg: 'signed up ok' });
+    // res.render(/* Path to main dashboard page */);
   });
-
-// app.post('/createuser',
-//   userController.verifyUser,
-//   userController.createUser,
-//   (req, res) => {
-//     res.status(200).json(res.locals.data);
-//   }
-// )
-// app.post('/createpost',
-//   postController.createPost,
-//   (req, res) => {
-//     res.status(200).json(res.locals.data);
-//   });
-// app.get('/home',
-//   postController.getPosts,
-//   (req, res) => {
-//     res.status(200).json(res.locals.data);
-//   });
-// app.patch('/status',
-//   postController.changeStatus,
-//   (req, res) => {
-//     res.status(200).json(res.locals.data);
-//   });
 
 // below unchanged
 
@@ -75,6 +52,3 @@ app.use((err, req, res, next) => {
 module.exports = app.listen(3000, () => {
   console.log('Listening on port 3000...');
 });
-
-
-
