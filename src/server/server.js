@@ -8,25 +8,35 @@ const postController = require('./controller/postController');
 
 app.use(bodyParser.json());
 
-app.get('/login', (req, res) => {
-  res.status(200).send('now in GET /login');
-});
 
-app.get('/signup', (req, res) => {
-  res.status(200).send('now in GET /signup');
-});
+app.get('/login',
+  (req, res) => {
+    res.render(/* Path to login page */);
+  });
+
+app.get('/signup',
+  // userController.createUser,
+  (req, res) => {
+    res.render(/* Path to signup page */);
+  });
 
 app.post('/login',
   userController.verifyUser,
+  // set ssid
+  // set cookie
   (req, res) => {
-    res.status(200).send('Successful login');
-  },
-);
+    res.render(/* Path to user dashboard page */);
+  });
 
 app.post('/signup',
   userController.verifyUser,
-
-);
+  userController.createUser,
+  // set ssid
+  // set cookie
+  (req, res) => {
+    res.status(200).send()
+    //res.render(/* Path to main dashboard page */);
+  });
 
 // app.post('/createuser',
 //   userController.verifyUser,
