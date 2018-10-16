@@ -3,7 +3,7 @@ import React from 'react';
 import Signup from './Signup.jsx';
 
 const Main = (props) => {
-  const { logInForm, onSignupSubmitHandler, onSignupNameChangeHandler, onSignupChangedHandler, updateLogInForm } = props;
+  const { logInForm, onSignupSubmitHandler, onSignupNameChangeHandler, onSignupChangedHandler, showForm, updateLogInForm } = props;
   return (
     <main>
       <Signup
@@ -11,6 +11,7 @@ const Main = (props) => {
         onSignupSubmitHandler={onSignupSubmitHandler}
         onSignupNameChangedHandler={onSignupNameChangeHandler}
         onSignupChangedHandler={onSignupChangedHandler}
+        showForm = {showForm}
         updateLogInForm={updateLogInForm}
       />
     </main>

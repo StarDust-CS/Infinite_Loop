@@ -175,6 +175,7 @@ class App extends Component {
           onSignupSubmitHandler={this.onSignupSubmitHandler}
           onSignupNameChangedHandler={this.onSignupNameChangeHandler}
           onSignupChangedHandler={this.onSignupChangedHandler}
+          showForm={this.showForm}
           updateLogInForm={this.updateLogInForm}
         />
         {render}
