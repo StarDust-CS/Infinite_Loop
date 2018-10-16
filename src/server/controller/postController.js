@@ -1,5 +1,5 @@
 //server exported in order to close database after tests are done
-const  db  = require('../postgresql.js');
+const db = require('../postgresql.js');
 
 module.exports = {
 
