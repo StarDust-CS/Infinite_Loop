@@ -73,7 +73,11 @@ module.exports = {
       .then((data) => {
         const user = data[0];
         bcrypt.compare(password, user.password, (error, resolve) => {
-          if (resolve) return next();
+          if (resolve) {
+            const { _id, first_name, last_name } = user;
+            res.locals.verifiedUser = { _id, first_name, last_name };
+            return next();
+          }
           return res.status(400).send({ msg: 'incorrect password' });
         });
       })
