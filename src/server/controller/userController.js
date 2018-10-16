@@ -52,10 +52,21 @@ module.exports = {
     db.any('SELECT * FROM users WHERE email = $1', [email])
 
       // results return as array of object (unique email, so 0)
-      .then(data => data[0])
-      .then(data => res.status(200).send(data))
+      .then((data) => {
+        // if user doesn't exist in db, reroute to sign up
+        if (!data[0]) res.redirect('/signup');
+        // if email is valid, but password is invalid, retry login
+        else if (data[0].password !== password) res.redirect('/login');
+        // upon successful credentials...
+        else {
+          // store unique user in response
+          res.locals.user = data[0];
+          return next();
+        }
+      })
       .catch(err => console.error(err));
   },
+
 
   // verifyUser(req, res, next) {
   //   db.any('SELECT name FROM student WHERE name = $1', req.body.name)
