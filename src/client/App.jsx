@@ -4,7 +4,7 @@ import PostSection from './components/PostSection.jsx';
 import Signup from './components/Signup.jsx';
 import CreateSection from './components/CreateSection.jsx';
 
-import LogInSignUp from './components/LogInSignUp.jsx';
+import LogIn from './components/LogIn.jsx';
 
 class App extends Component {
   constructor(props) {
@@ -58,22 +58,18 @@ class App extends Component {
   }
 
   onSignupSubmitHandler() {
+    const { name, role } = this.state;
     fetch('http://localhost:3000/createuser', {
       method: 'POST',
       body: JSON.stringify({
-        name: this.state.name,
-        role: this.state.role,
+        name, role,
       }),
       headers: { 'Content-Type': 'application/json' },
     })
       .then(data => data.json())
-      .then(data => {
-        this.onLoginHandler(data.id);
-      })
+      .then(data => this.onLoginHandler(data.id))
       .then(() => this.fetchData())
-      .catch(err => {
-        console.log(err);
-      })
+      .catch(err => console.log(err));
   }
 
   onLoginHandler(userid) {
@@ -124,7 +120,12 @@ class App extends Component {
     </div>);
     return (
       <div>
-        <LogInSignUp />
+        <Signup
+          onSignupSubmitHandler={this.onSignupSubmitHandler}
+          onSignupNameChangedHandler={this.onSignupNameChangeHandler}
+          onSignupChangedHandler={this.onSignupChangedHandler}
+        />
+        {render}
       </div>
     );
   }
@@ -138,4 +139,5 @@ onSignupNameChangedHandler={this.onSignupNameChangeHandler}
 onSignupChangedHandler={this.onSignupChangedHandler}
 />
 {render}
+
 */
