@@ -9,26 +9,29 @@ import CreateSection from './components/CreateSection.jsx';
 // Import App Styling
 import './App.css';
 
+// Blank Registration Form
+const blankRegisterForm = {
+  cohort: 0,
+  role: '',
+  firstName: '',
+  lastName: '',
+  email: '',
+  password: '',
+  code: '',
+};
+
 class App extends Component {
   constructor(props) {
     super(props);
-
     this.state = {
-      logInForm: {
+      logInFormFields: {
         email: '',
         password: '',
         remember: true,
       },
-      registerForm: {
-        cohort: '',
-        firstName: '',
-        lastName: '',
-        email: '',
-        password: '',
-        role: '',
-        secretCode: '',
-      },
+      registerFormFields: blankRegisterForm,
       formDisplay: 'login',
+      formPage: 1,
       // name: '',
       notStarted: [],
       inProgress: [],
@@ -45,7 +48,9 @@ class App extends Component {
     this.onSignupChangedHandler = this.onSignupChangedHandler.bind(this);
     this.onSignupNameChangeHandler = this.onSignupNameChangeHandler.bind(this);
     this.onSignupSubmitHandler = this.onSignupSubmitHandler.bind(this);
+    this.submitRegister = this.submitRegister.bind(this);
     this.updateLogInForm = this.updateLogInForm.bind(this);
+    this.updateRegisterForm = this.updateRegisterForm.bind(this);
   }
 
   // Handler to update state as user fills in sign-in form name
@@ -89,28 +94,66 @@ class App extends Component {
       .catch(err => console.error(err));
   }
 
-  // Handler to show registration form
-  showForm(form) {
-    this.setState({ formDisplay: form });
+  // Handler for registraiton form submission
+  submitRegister(event) {
+    if (event.target.value === 'Continue') {
+      this.setState({ formPage: 2 });
+    } else if (event.target.value === 'Submit') {
+      const { registerFormFields } = this.state;
+      console.log(registerFormFields);
+      fetch('/signup', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json; charset=utf-8',
+        },
+        body: JSON.stringify(registerFormFields),
+      })
+        .then(data => data.json())
+        .then(data => console.log(data))
+        .then(data => this.setState({
+          formPage: 1,
+          registerFormFields: blankRegisterForm,
+        }))
+        .catch(err => console.error(err));
+    }
   }
 
-  // Handler to show login form
-  showRegistrationForm() {
-    this.setState({ formDisplay: 'login' });
+  // Handler to show registration form
+  showForm(event) {
+    this.setState({ formDisplay: event.target.value });
   }
 
   // Handler to update state if user fills in login form
   updateLogInForm(event) {
-    const logInForm = this.state;
-    const { email, password, remember } = logInForm;
-    const newLogInForm = {
+    const logInFormFields = this.state;
+    const { email, password, remember } = logInFormFields;
+    const newLogInFormFields = {
       email,
       password,
       remember,
     };
-    newLogInForm[event.target.name] = event.target.value;
-    this.setState({ logInForm: newLogInForm });
+    newLogInFormFields[event.target.name] = event.target.value;
+    this.setState({ logInFormFields: newLogInFormFields });
   }
+
+  updateRegisterForm(event) {
+    const { registerFormFields } = this.state;
+    const {
+      cohort, firstName, lastName, email, password, role, code,
+    } = registerFormFields;
+    const newRegisterFormFields = {
+      cohort,
+      firstName,
+      lastName,
+      email,
+      password,
+      role,
+      code,
+    };
+    newRegisterFormFields[event.target.name] = event.target.value;
+    this.setState({ registerFormFields: newRegisterFormFields });
+  }
+
 
   // PATCH updates to post database
   changeStatus(userId, postStatus, postId) {
@@ -160,22 +203,27 @@ class App extends Component {
   }
 
   render() {
-    const { name, notStarted, inProgress, closed, role, loggedIn, userid, logInForm } = this.state;
+    const {
+      name, notStarted, formDisplay, inProgress, closed, role, loggedIn, userid, logInFormFields, registerFormFields, formPage,
+    } = this.state;
     const render = [];
     if (loggedIn) render.push(
       <div>
-        <CreateSection userid = {userid} fetchData = {this.fetchData} />
-        <PostSection changeStatus = {this.changeStatus} name={name} notStarted={notStarted} inProgress={inProgress} closed={closed} role={role} />
+        <CreateSection userid={userid} fetchData={this.fetchData} />
+        <PostSection changeStatus={this.changeStatus} name={name} notStarted={notStarted} inProgress={inProgress} closed={closed} role={role} />
       </div>);
     return (
       <div className="app-container">
         <Header />
         <Main
-          logInForm={logInForm}
-          onSignupSubmitHandler={this.onSignupSubmitHandler}
-          onSignupNameChangedHandler={this.onSignupNameChangeHandler}
-          onSignupChangedHandler={this.onSignupChangedHandler}
+          formDisplay={formDisplay}
+          formPage={formPage}
+          logInFormFields={logInFormFields}
+          registerFormFields={registerFormFields}
+          showForm={this.showForm}
+          submitRegister={this.submitRegister}
           updateLogInForm={this.updateLogInForm}
+          updateRegisterForm={this.updateRegisterForm}
         />
         {render}
       </div>
