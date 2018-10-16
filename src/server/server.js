@@ -12,6 +12,10 @@ app.get('/login', (req, res) => {
   res.status(200).send('now in GET /login');
 });
 
+app.get('/signup', (req, res) => {
+  res.status(200).send('now in GET /signup');
+});
+
 app.post('/login',
   userController.verifyUser,
   (req, res) => {
