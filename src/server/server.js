@@ -1,5 +1,6 @@
 // initialize connection with PostgreSQL database
 const express = require('express');
+const cors = require('cors');
 const bodyParser = require('body-parser');
 
 const app = express();
@@ -7,7 +8,7 @@ const userController = require('./controller/userController');
 const postController = require('./controller/postController');
 
 app.use(bodyParser.json());
-
+app.use(cors());
 
 app.get('/login',
   (req, res) => {
@@ -25,16 +26,17 @@ app.post('/login',
   // set ssid
   // set cookie
   (req, res) => {
-    res.render(/* Path to user dashboard page */);
+    res.status(200).send({ msg: 'you logged in' });
+    // res.render(/* Path to user dashboard page */);
   });
 
 app.post('/signup',
-  userController.verifyUser,
+  userController.checkEmailExists,
   userController.createUser,
   // set ssid
   // set cookie
   (req, res) => {
-    res.status(200).send()
+    res.status(200).send({ msg: 'signed up ok' });
     //res.render(/* Path to main dashboard page */);
   });
 
