@@ -101,7 +101,7 @@ class App extends Component {
     } else if (event.target.value === 'Submit') {
       const { registerFormFields } = this.state;
       console.log(registerFormFields);
-      fetch('/signup', {
+      fetch('http://localhost:3000/signup', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json; charset=utf-8',
