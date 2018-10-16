@@ -25,7 +25,7 @@ module.exports = {
     const userInputs = [firstName, lastName, email, password, cohort, role];
 
     const addNewUser = () => {
-      db.one('INSERT INTO users("first_name", "last_name", "email", "password", "cohort", "role") VALUES($1, $2, $3, $4, $5, $6)', userInputs)
+      db.one('INSERT INTO users("first_name", "last_name", "email", "password", "cohort", "role") VALUES($1, $2, $3, $4, $5, $6) RETURNING *', userInputs)
         .then((data) => {
           res.locals.newUser = data;
           return next();
@@ -74,8 +74,8 @@ module.exports = {
         const user = data[0];
         bcrypt.compare(password, user.password, (error, resolve) => {
           if (resolve) {
-            const { _id, first_name, last_name } = user;
-            res.locals.verifiedUser = { _id, first_name, last_name };
+            const { _id, first_name, last_name, role } = user;
+            res.locals.verifiedUser = { _id, first_name, last_name, role };
             return next();
           }
           return res.status(400).send({ msg: 'incorrect password' });
