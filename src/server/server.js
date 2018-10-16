@@ -12,6 +12,11 @@ app.post('/login',
   userController.verifyUser,
 );
 
+app.post('signup',
+  userController.verifyUser,
+  
+);
+
 // app.post('/createuser',
 //   userController.verifyUser,
 //   userController.createUser,
