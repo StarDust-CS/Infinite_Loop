@@ -161,7 +161,6 @@ class App extends Component {
     })
       .then(data => data.json())
       .then((data) => {
-        console.log(data);
         const newUserInfo = { loggedIn: true };
         newUserInfo.firstName = data.first_name;
         newUserInfo.lastName = data.last_name;
@@ -197,8 +196,8 @@ class App extends Component {
         .then(data => data.json())
         .then((data) => {
           const newUserInfo = { loggedIn: true };
-          newUserInfo.firstName = data.firstName;
-          newUserInfo.lastName = data.lastName;
+          newUserInfo.firstName = data.first_name;
+          newUserInfo.lastName = data.last_name;
           newUserInfo.role = data.role;
           newUserInfo.userID = data._id;
           const newFormDisplay = defaultFormDisplay;
@@ -215,7 +214,6 @@ class App extends Component {
 
   submitTicket(event) {
     const { formDisplay, ticketFormFields } = this.state;
-    console.log(ticketFormFields);
     if (event.target.value === 'Continue') {
       const newFormDisplay = { ...formDisplay };
       const newFormFields = { ...ticketFormFields };
@@ -230,6 +228,7 @@ class App extends Component {
         },
         body: JSON.stringify(ticketFormFields),
       })
+        .then((data) => data.json())
         .then((data) => {
           const newFormDisplay = defaultFormDisplay;
           newFormDisplay.showForm = false;

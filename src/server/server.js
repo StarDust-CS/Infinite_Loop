@@ -14,16 +14,16 @@ app.use(bodyParser.json());
 app.use(cookieParser());
 app.use(cors());
 /* ROUTING ON: User */
-app.get('/',
-  cookieController.setCookie,
-  (req, res) => {
-    res.status(200).send({ msg: 'cookie created ' });
-  });
+// app.get('/',
+//   cookieController.setCookie,
+//   (req, res) => {
+//     res.status(200).send({ msg: 'cookie created ' });
+//   });
 
 /* ROUTING ON: User log in */
 app.post('/login',
   userController.verifyUser,
-  cookieController.setSSIDCookie,
+  // cookieController.setSSIDCookie,
   // set ssid
   (req, res) => {
     res.status(200).json(res.locals.verifiedUser);
@@ -33,7 +33,7 @@ app.post('/login',
 app.post('/signup',
   userController.checkEmailExists,
   userController.createUser,
-  cookieController.setSSIDCookie,
+  // cookieController.setSSIDCookie,
   // set ssid
   (req, res) => {
     res.status(200).json(res.locals.newUser);
