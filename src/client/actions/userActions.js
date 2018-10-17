@@ -22,10 +22,9 @@ export const userActions = {
  * async call to db to update db
  * 
 */
-const registerUser = (user) => (
+const registerUser = (user) => ({
   type: types.REGISTER_USER,
-  payload: user,
-
+  payload: logInFormFields,
 })
 
 const userLogin = (user) => ({
@@ -41,69 +40,54 @@ const getUser = (user) => ({
 })
 
 
-function register(user) {
+function register(event, logInFormFields ) {
   return dispatch => {
     // to users reducer to update state with new user
 
     //async call to db
-    fetch('http://localhost:3000/register', {
-      method: 'post',
+    fetch('http://localhost:3000/signup', {
+      method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        firstname: user.firstname,
-        lastname: user.lastname,
-        email: user.email,
-        password: '',
-        role: user.role,
-        cohort: user.cohort,
-        secretCode: user.secretCode
-      })
+      body: JSON.stringify(logInFormFields) /** */
+
+    }).then(res => res.json())
+      .then(data => {
+          dispatch(registerUser(logInFormFields));
+          console.log('SUCCESSFULL REGISTRATION')
+          console.log(data)
+      }).catch(err => console.error(err));
+    }
+  }
+
+function logIn(userInfo) {
+  return dispatch => {
+    //async call to server for authentication 
+    //async call to db
+    fetch('http://localhost:3000/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({userInfo})
 
     }).then(res => res.json())
       .then(response => {
-        if (response) {
-          dispatch(registerUser(user));
-          console.log('SUCCESSFULL REGISTRATION')
-        }
-      })
-
-
-  function logIn(username, password, remember) {
-    return dispatch => {
-      //async call to server for authentication 
-      //async call to db
-      fetch('http://localhost:3000/login', {
-        method: 'post',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({/** needs testing */
-          email: email,
-          password: password,
-          remember: remember
-
-        })
-
-      }).then(res => res.json())
-        .then(response => {
-          console.log('SUCCESSFULL LOGIN')
-          dispatch(userLogin(response))/**respond with username and session token */
-        })
-    }
-
+        console.log('SUCCESSFULL LOGIN')
+        dispatch(userLogin(response))/**respond with username and session token */
+      }).catch(err => console.error(err));
   }
-  
-  function getUserById(id) {
-    return dispatch => {
-      //async call to db
-      fetch('http://localhost:3000/userId', {
-        method: 'get',
-      })
-        .then(response => response.json())
-        .then(data => {
-          dispatch(getUser(data))
-        })
-    }
-  }
+
 }
+
+function getUserById(id) {
+  return dispatch => {
+    //async call to db
+    fetch('http://localhost:3000/userId', {
+      method: 'GET',
+    })
+      .then(response => response.json())
+      .then(data => {
+        dispatch(getUser(data))
+      })
+  }
 }
 
 

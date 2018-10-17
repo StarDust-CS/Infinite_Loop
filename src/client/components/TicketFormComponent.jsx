@@ -2,16 +2,11 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 const TicketFormComponent = (props) => {
-  const {
-    formDisplay, submitTicket, ticketFormFields, updateTicketForm, userInfo,
-  } = props;
-  const {
-    createdAt, studentID, category, title, problem, expect, tried, hypo
-  } = ticketFormFields;
-  const {
-    firstName, lastName, role, userID,
-  } = userInfo;
+  const { formDisplay, submitTicket, ticketFormFields, updateTicketForm, userInfo, } = props;
+  const { createdAt, studentID, category, title, problem, expect, tried, hypo } = ticketFormFields;
+  const { firstName, lastName, role, userID, } = userInfo;
   const ticketFormDisplay = [];
+  
   if (formDisplay.formPage === 1) {
     ticketFormDisplay.push(<span className="main-ticket-span-title">Student Name: {firstName} {lastName}</span>);
     ticketFormDisplay.push(<span className="main-ticket-span-title">Ticket Date: {new Date().toDateString()} </span>);
