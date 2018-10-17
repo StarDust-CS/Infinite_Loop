@@ -27,7 +27,9 @@ module.exports = {
     const addNewUser = () => {
       db.one('INSERT INTO users("first_name", "last_name", "email", "password", "cohort", "role") VALUES($1, $2, $3, $4, $5, $6) RETURNING *', userInputs)
         .then((data) => {
-          res.locals.newUser = data;
+          const { _id, first_name, last_name, role } = data;
+          res.locals.newUser = { _id, first_name, last_name, role };
+          console.log(res.locals.newUser);
           return next();
         })
         .catch(err => console.error(err));
