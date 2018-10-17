@@ -13,12 +13,6 @@ const ticketController = require('./controller/ticketController');
 app.use(bodyParser.json());
 app.use(cookieParser());
 app.use(cors());
-/* ROUTING ON: User */
-// app.get('/',
-//   cookieController.setCookie,
-//   (req, res) => {
-//     res.status(200).send({ msg: 'cookie created ' });
-//   });
 
 /* ROUTING ON: User log in */
 app.post('/login',
@@ -37,6 +31,14 @@ app.post('/signup',
   // set ssid
   (req, res) => {
     res.status(200).json(res.locals.newUser);
+  });
+
+/* [GET /ticket]: Serve up all tickets */
+app.get('/ticket',
+  ticketController.getTickets,
+  // cookieController.setCookie,
+  (req, res) => {
+    res.status(200).json(res.locals.ticketArray);
   });
 
 /* ROUTING ON: User submits help ticket */
