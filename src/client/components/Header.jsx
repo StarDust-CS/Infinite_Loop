@@ -4,7 +4,7 @@ import React from 'react';
 import csLogoURL from '../../../images/codesmith-logo.svg';
 
 const Header = (props) => {
-  const { showForm } = props;
+  const { showForm, userRole } = props;
   return (
     <header>
       <div className="header-cs-logo-container">
@@ -21,6 +21,7 @@ const Header = (props) => {
 
 Header.propTypes = {
   showForm: PropTypes.func.isRequired,
+  userRole: PropTypes.string.isRequired,
 };
 
 export default Header;

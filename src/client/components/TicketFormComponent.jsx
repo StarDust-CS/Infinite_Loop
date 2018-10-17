@@ -20,6 +20,7 @@ const TicketFormComponent = (props) => {
       <select className="main-form-field" name="category" onChange={updateTicketForm} value={category}>
         <option value="" disabled>CATEGORY</option>
         <option value="JS Fundamentals">JS Fundamentals</option>
+        <option value="CSS Fundamentals">JS Fundamentals</option>
         <option value="Data/Algorithms">Data/Algorithms</option>
         <option value="React/Redux">React/Redux</option>
         <option value="Node/Express">Node/Express</option>
@@ -29,23 +30,23 @@ const TicketFormComponent = (props) => {
         <option value="Miscellaneous">Miscellaneous</option>
       </select>,
     );
-    ticketFormDisplay.push(<input className="main-form-field" maxLength="60" name="title" onChange={updateTicketForm} placeholder="TITLE (max 60 characters)" type="text" value={title} />);
+    ticketFormDisplay.push(<input className="main-form-field" maxLength="20" name="title" onChange={updateTicketForm} placeholder="TITLE (max 20 characters)" type="text" value={title} />);
     ticketFormDisplay.push(<input className="main-form-button" onClick={submitTicket} type="submit" value="Continue" />);
   } else if (formDisplay.formPage === 2) {
     ticketFormDisplay.push(<span className="main-ticket-span-title">Page 2: My Problem</span>);
-    ticketFormDisplay.push(<textarea className="main-form-textarea" maxLength="180" name="problem" onChange={updateTicketForm} placeholder="What problem are you experiencing?" value={problem} />);
+    ticketFormDisplay.push(<textarea className="main-form-textarea" maxLength="140" name="problem" onChange={updateTicketForm} placeholder="What problem are you experiencing? (max 140 characters)" value={problem} />);
     ticketFormDisplay.push(<input className="main-form-button" onClick={submitTicket} type="submit" value="Continue" />);
   } else if (formDisplay.formPage === 3) {
     ticketFormDisplay.push(<span className="main-ticket-span-title">Page 3: What I Expect To Happen</span>);
-    ticketFormDisplay.push(<textarea className="main-form-textarea" maxLength="180" name="expect" onChange={updateTicketForm} placeholder="What do you expect to happen?" value={expect} />);
+    ticketFormDisplay.push(<textarea className="main-form-textarea" maxLength="140" name="expect" onChange={updateTicketForm} placeholder="What do you expect to happen? (max 140 characters)" value={expect} />);
     ticketFormDisplay.push(<input className="main-form-button" onClick={submitTicket} type="submit" value="Continue" />);
   } else if (formDisplay.formPage === 4) {
     ticketFormDisplay.push(<span className="main-ticket-span-title">Page 4: What I Have Tried</span>);
-    ticketFormDisplay.push(<textarea className="main-form-textarea" maxLength="180" name="tried" onChange={updateTicketForm} placeholder="What have you already tried?" value={tried} />);
+    ticketFormDisplay.push(<textarea className="main-form-textarea" maxLength="140" name="tried" onChange={updateTicketForm} placeholder="What have you already tried? (max 140 characters)" value={tried} />);
     ticketFormDisplay.push(<input className="main-form-button" onClick={submitTicket} type="submit" value="Continue" />);
   } else if (formDisplay.formPage === 5) {
     ticketFormDisplay.push(<span className="main-ticket-span-title">Page 5: Why It Is Not Working</span>);
-    ticketFormDisplay.push(<textarea className="main-form-textarea" maxLength="180" name="hypo" onChange={updateTicketForm} placeholder="What is your hypothesis for why your solution isn't working?" value={hypo} />);
+    ticketFormDisplay.push(<textarea className="main-form-textarea" maxLength="140" name="hypo" onChange={updateTicketForm} placeholder="What is your hypothesis for why your solution isn't working? (max 140 characters)" value={hypo} />);
     ticketFormDisplay.push(<input className="main-form-button" onClick={submitTicket} type="submit" value="Submit" />);
   }
   return (

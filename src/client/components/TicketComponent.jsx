@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 const TicketComponent = (props) => {
   const { ticket } = props;
   const {
-    ticketID, createdAt, studentFullName, fellowFullName, status, category,
+    ticketID, createdAt, cohort, studentFullName, fellowFullName, closedFullName, status, category,
     title, problem, expect, tried, hypo,
   } = ticket;
   const fellow = [];
@@ -28,8 +28,13 @@ const TicketComponent = (props) => {
       </div>,
     );
     ticketHeader.push(
-      <div className="main-ticket-category open-ticket-category">
-        <span className="main-ticket-category-text">Category: {category}</span>
+      <div className="main-ticket-author open-ticket-author">
+        <span className="main-ticket-author-text">Student: {studentFullName} (Cohort {cohort})</span>
+      </div>,
+    );
+    fellow.push(
+      <div className="main-ticket-footer">
+        <span className="main-ticket-footer-text">Fellow: NOT YET CLAIMED</span>
       </div>,
     );
   }
@@ -52,8 +57,13 @@ const TicketComponent = (props) => {
       </div>,
     );
     ticketHeader.push(
-      <div className="main-ticket-category in-progress-ticket-category">
-        <span className="main-ticket-category-text">Category: {category}</span>
+      <div className="main-ticket-author in-progress-ticket-author">
+        <span className="main-ticket-author-text">Student: {studentFullName} (Cohort {cohort})</span>
+      </div>,
+    );
+    fellow.push(
+      <div className="main-ticket-footer">
+        <span className="main-ticket-footer-text">Fellow: {fellowFullName}</span>
       </div>,
     );
   }
@@ -76,17 +86,23 @@ const TicketComponent = (props) => {
       </div>,
     );
     ticketHeader.push(
-      <div className="main-ticket-category closed-ticket-category">
-        <span className="main-ticket-category-text">Category: {category}</span>
+      <div className="main-ticket-author closed-ticket-author">
+        <span className="main-ticket-author-text">Student: {studentFullName} (Cohort {cohort})</span>
+      </div>,
+    );
+    fellow.push(
+      <div className="main-ticket-footer">
+        <span className="main-ticket-footer-text">Closed By: {closedFullName}</span>
       </div>,
     );
   }
-  if (status === 'IN PROGRESS' || status === 'CLOSED') {
-    fellow.push(<span className="main-ticket-footer-text">Fellow: {fellowFullName}</span>);
-  }
+
   return (
     <div className="main-ticket-container">
       {ticketHeader}
+      <div className="main-ticket-body-title">
+        Category: {category}
+      </div>
       <div className="main-ticket-body-title">
         My Problem
       </div>
@@ -111,10 +127,8 @@ const TicketComponent = (props) => {
       <div className="main-ticket-body">
         {hypo}
       </div>
-      <div className="main-ticket-footer">
-        <span className="main-ticket-footer-text">Student: {studentFullName}</span>
-        {fellow}
-      </div>
+
+      {fellow}
       
       <div className="main-ticket-date-footer">
         <span className="main-ticket-footer-text">Date: {createdAt.toDateString()}</span>

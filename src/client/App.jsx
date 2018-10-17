@@ -53,17 +53,25 @@ const defaultFormDisplay = {
   formPage: 1,
 };
 
+// Default Filters
+const defaultFilterConfig = {
+  status: 'ALL',
+  category: 'ALL',
+};
+
 // TODO: DELETE - Sample Tickets
-const sampleTicket1 = {
+const sampleTicket3 = {
   status: 'OPEN',
   ticketID: 3,
   title: 'Data Rendering in React',
   studentFullName: 'Joel Perkins',
+  cohort: 24,
   createdAt: new Date(),
   fellowFullName: '',
+  closedFullName: '',
   category: 'React/Redux',
   problem: 'trouble getting data to render on the page',
-  expect: 'updating state with incoming data, using thunk to wait for the data. It console logs aftert it arrives however we are unsure if it is saving to the state properly',
+  expect: 'updating state with incoming data, using thunk to wait for the data. It console logs aftert it arrives however we are unsure if it is saving to the state',
   tried: 'google, console logging data..console logs come back as undefined',
   hypo: 'dispatch is not firing to update the store properly',
 };
@@ -73,8 +81,10 @@ const sampleTicket2 = {
   ticketID: 2,
   title: 'React Component Reuse',
   studentFullName: 'Ha-Rry Kim',
+  cohort: 24,
   createdAt: new Date(),
   fellowFullName: 'Stephanie Fong',
+  closedFullName: '',
   category: 'React/Redux',
   problem: 'Having trouble reusing same component for react',
   expect: 'Render on browser',
@@ -82,13 +92,15 @@ const sampleTicket2 = {
   hypo: 'It is not recognizing props?',
 };
 
-const sampleTicket3 = {
+const sampleTicket1 = {
   status: 'CLOSED',
   ticketID: 1,
   title: 'Website Code Loading',
   studentFullName: 'Elliot Kim',
+  cohort: 24,
   createdAt: new Date(),
-  fellowFullName: '',
+  fellowFullName: 'Sam Goldberg',
+  closedFullName: 'Sam Goldberg',
   category: 'JS Fundamentals',
   problem: 'Load our code onto webpage',
   expect: 'Code loading onto webpage',
@@ -104,14 +116,16 @@ class App extends Component {
       registerFormFields: blankRegisterForm,
       ticketFormFields: blankTicketForm,
       userInfo: blankUser,
-      ticketDisplay: [sampleTicket1, sampleTicket2, sampleTicket3],
+      ticketDisplay: [sampleTicket3, sampleTicket2, sampleTicket1],
       formDisplay: defaultFormDisplay,
+      filterConfig: defaultFilterConfig,
     };
 
     this.showForm = this.showForm.bind(this);
     this.submitLogIn = this.submitLogIn.bind(this);
     this.submitRegister = this.submitRegister.bind(this);
     this.submitTicket = this.submitTicket.bind(this);
+    this.updateFilterConfig = this.updateFilterConfig.bind(this);
     this.updateLogInForm = this.updateLogInForm.bind(this);
     this.updateRegisterForm = this.updateRegisterForm.bind(this);
     this.updateTicketForm = this.updateTicketForm.bind(this);
@@ -147,7 +161,6 @@ class App extends Component {
     })
       .then(data => data.json())
       .then((data) => {
-        console.log(data);
         const newUserInfo = { loggedIn: true };
         newUserInfo.firstName = data.first_name;
         newUserInfo.lastName = data.last_name;
@@ -181,15 +194,26 @@ class App extends Component {
         body: JSON.stringify(registerFormFields),
       })
         .then(data => data.json())
-        .then(data => console.log(data))
-        .then(data => this.setState({ formDisplay: defaultFormDisplay }))
+        .then((data) => {
+          const newUserInfo = { loggedIn: true };
+          newUserInfo.firstName = data.first_name;
+          newUserInfo.lastName = data.last_name;
+          newUserInfo.role = data.role;
+          newUserInfo.userID = data._id;
+          const newFormDisplay = defaultFormDisplay;
+          newFormDisplay.showForm = false;
+          this.setState({
+            formDisplay: newFormDisplay,
+            logInFormFields: blankLogInForm,
+            userInfo: newUserInfo,
+          });
+        })
         .catch(err => console.error(err));
     }
   }
 
   submitTicket(event) {
     const { formDisplay, ticketFormFields } = this.state;
-    console.log(ticketFormFields);
     if (event.target.value === 'Continue') {
       const newFormDisplay = { ...formDisplay };
       const newFormFields = { ...ticketFormFields };
@@ -197,8 +221,29 @@ class App extends Component {
       newFormFields.createdAt = Date.now();
       this.setState({ formDisplay: newFormDisplay, ticketFormFields: newFormFields });
     } else if (event.target.value === 'Submit') {
-      this.setState({ formDisplay: defaultFormDisplay, ticketFormFields: blankTicketForm });
+      fetch('http://localhost:3000/ticket', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json; charset=utf-8',
+        },
+        body: JSON.stringify(ticketFormFields),
+      })
+        .then((data) => data.json())
+        .then((data) => {
+          const newFormDisplay = defaultFormDisplay;
+          newFormDisplay.showForm = false;
+          this.setState({ formDisplay: defaultFormDisplay, ticketFormFields: blankTicketForm });
+        })
+        .catch(err => console.error(err));
     }
+  }
+
+  // Handler to update Filter Configuration if user changes filters
+  updateFilterConfig(event) {
+    const { filterConfig } = this.state;
+    const newFilterConfig = { ...filterConfig };
+    newFilterConfig[event.target.name] = event.target.value;
+    this.setState({ filterConfig: newFilterConfig });
   }
 
   // Handler to update state if user fills in login form
@@ -233,14 +278,17 @@ class App extends Component {
 
   render() {
     const {
-      formDisplay, userInfo, logInFormFields, registerFormFields, ticketFormFields, ticketDisplay,
+      filterConfig, formDisplay, userInfo, logInFormFields, registerFormFields, ticketFormFields, ticketDisplay,
     } = this.state;
+    const { role } = userInfo;
     return (
       <div className="app-container">
         <Header
+          userRole={role}
           showForm={this.showForm}
         />
         <Main
+          filterConfig={filterConfig}
           formDisplay={formDisplay}
           logInFormFields={logInFormFields}
           registerFormFields={registerFormFields}
@@ -251,6 +299,7 @@ class App extends Component {
           submitLogIn={this.submitLogIn}
           submitRegister={this.submitRegister}
           submitTicket={this.submitTicket}
+          updateFilterConfig={this.updateFilterConfig}
           updateLogInForm={this.updateLogInForm}
           updateRegisterForm={this.updateRegisterForm}
           updateTicketForm={this.updateTicketForm}
