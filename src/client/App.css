@@ -1,3 +1,4 @@
+/* App Foundations */
 body {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   height: 100vh;
@@ -17,12 +18,20 @@ header {
   box-shadow: 0px 3px 5px rgba(100, 100, 100, 0.49);
   color: #FFFFFF;
   font-size: 36px;
-  height: 60px;
   width: 100%;
   z-index: 1;
 
   display: flex;
+  justify-content: space-between;
+}
+
+.header-cs-logo-container {
+  height: 60px;
+  width: 270px;
+
+  display: flex;
   align-items: center;
+  justify-content: center;
 }
 
 .header-cs-logo-img {
@@ -40,25 +49,45 @@ header {
   margin: 5px;
 }
 
+.header-add-ticket-button-container {
+  height: 60px;
+  width: 80px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.header-add-ticket-button {
+  background: #1CA4E7;
+  border: none;
+  color: white;
+  font-size: 48px;
+  height: 50px;
+  width: 50px;
+}
+
 main {
   background: #F7F7F7;
   height: 100%;
   width: 100%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-/* Log In Page */
-
-.main-login-container {
+/* Log In and Registration -- Foundations */
+.main-form-container {
+  background: #FFFFFF;
   border: "1px solid black";
   box-shadow: 0px 3px 5px rgba(100, 100, 100, 0.49);
-  height: "200px";
-  margin: 10vw 5vw;
-  text-align: "center";
-  width: 90vw;
+  margin: 5vh 25vw;
+  width: 50vw;
   z-index: 1;
 }
 
-.main-login-header {
+.main-form-header {
   background: #000000;
   color: #FFFFFF;
   font-size: 28px;
@@ -67,7 +96,7 @@ main {
   line-height: 42px;
   margin: 0 0 4vh 0;
   text-align: center;
-  width: 90vw;
+  width: 50vw;
 }
 
 .main-login-body {
@@ -75,10 +104,14 @@ main {
   display: flex;
   align-items: center;
   flex-direction: column;
-
 }
 
-.main-login-field {
+.main-form-buffer {
+  width: 100%;
+  height: 5vh;
+}
+
+.main-form-field {
   background: none;
   border: 0;
   border-bottom: 1px solid grey;
@@ -87,15 +120,56 @@ main {
   margin: 2vh 0 2vh 0;
   outline: none;
   padding: 10px;
-  width: 75vw;
+  width: 80%;
+}
+
+.main-form-textarea {
+  background: none;
+  border: 1px solid #AAAAAA;
+  box-sizing: border-box;
+  box-shadow: 0px 3px 5px rgba(100, 100, 100, 0.49);
+  font-size: 14px;
+  margin: 2vh 0 2vh 0;
+  outline: none;
+  padding: 10px;
+  width: 80%;
+  height: 200px;
+}
+
+.main-form-field-rc-container {
+  width: 80%;
+}
+
+.main-form-field-cohort {
+  background: none;
+  border: 0;
+  border-bottom: 1px solid grey;
+  box-sizing: border-box;
+  font-size: 14px;
+  margin: 2vh 2% 2vh 0;
+  outline: none;
+  padding: 10px;
+  width: 38%;
+}
+
+.main-form-field-role {
+  background: none;
+  border: 0;
+  border-bottom: 1px solid grey;
+  box-sizing: border-box;
+  font-size: 14px;
+  margin: 2vh 0 2vh 0;
+  outline: none;
+  padding: 10px;
+  width: 58%;
 }
 
 .main-login-remember-container {
   color: #666666;
-  width: 75vw;
+  width: 80%;
 }
 
-.main-login-button {
+.main-form-button {
   background: #1CA4E7;
   border-radius: 22px;
   font-size: 16px;
@@ -103,7 +177,7 @@ main {
   height: auto;
   line-height: 42px;
   margin: 4vh 0 0 0;
-  padding: 0 16vw;
+  padding: 0 20%;
   text-align: center;
 }
 
@@ -120,11 +194,63 @@ main {
   padding: 4vh 0 4vh 0;
 }
 
-@media only screen and (max-width: 425px) {
-  .main-login-container {
-    background: #FFFFFF;
-    border: "1px solid black";
-    height: "200px";
-    text-align: "center";
-  }
+.main-ticket-span-title {
+  font-weight: bold;
 }
+
+.main-ticket-span-body {
+
+}
+
+/* Log In and Registration -- Phone Portrait */
+
+@media only screen
+  and (max-width: 425px)
+  and (orientation: portrait) {
+
+    .main-form-container {
+      height: "200px";
+      margin: 5vh 5vw;
+      width: 90vw;
+    }
+
+    .main-form-header {
+      font-size: 28px;
+      font-weight: bold;
+      height: 42px;
+      line-height: 42px;
+      margin: 0 0 4vh 0;
+      text-align: center;
+      width: 90vw;
+    }
+
+}
+
+/* Log In and Registration -- Phone Landscape */
+
+/* Log In and Registration -- Tablet Portrait */
+@media only screen
+  and (min-width: 425px) 
+  and (max-width: 1024px)
+  and (orientation: portrait) {
+
+    .main-form-container {
+      height: "200px";
+      margin: 5vh 15vw;
+      width: 70vw;
+    }
+
+    .main-form-header {
+      font-size: 28px;
+      font-weight: bold;
+      height: 42px;
+      line-height: 42px;
+      margin: 0 0 4vh 0;
+      text-align: center;
+      width: 70vw;
+    }
+
+}
+
+/* Log In and Registration -- Tablet Landscape */
+
