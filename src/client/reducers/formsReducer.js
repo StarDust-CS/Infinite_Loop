@@ -39,17 +39,20 @@ const ticketsReducer = (state = initialState, action) => {
     case types.UPDATE_FORM:
       {
         //Copy initial state
-        console.log(action.payload)
-        const newState = Object.assign({}, state);
+        console.log('yy', action.payload.target)
+        const newState = JSON.parse(JSON.stringify(state));
         if (action.payload.target.name === 'remember') {
-          newState.LogInFormFields[action.payload.target.name] = action.payload.target.checked;
+          newState.logInFormFields[action.payload.target.name] = action.payload.target.checked;
         } else {
-          newState.LogInFormFields[action.payload.target.name] = action.payload.target.value;
+          console.log('in else', action.payload.target.value)
+          console.log('current state', state)
+          newState.logInFormFields[action.payload.target.name] = action.payload.target.value;
+          console.log('nestate', newState.logInFormFields[action.payload.target.name])
         }
 
         return {
           ...state,
-          logInFormFields: newState.LogInFormFields,
+          logInFormFields: newState.logInFormFields,
         }
 
       }

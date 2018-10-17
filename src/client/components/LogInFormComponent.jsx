@@ -5,6 +5,7 @@ const LogInFormComponent = (props) => {
   const {
     logInFormFields, showForm, submitLogIn, updateLogInForm,
   } = props;
+  console.log('these are props:', props)
   return (
     <div className="main-form-container">
       <div className="main-form-header">
