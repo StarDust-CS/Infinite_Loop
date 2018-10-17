@@ -20,7 +20,7 @@ const TicketFormComponent = (props) => {
       <select className="main-form-field" name="category" onChange={updateTicketForm} value={category}>
         <option value="" disabled>CATEGORY</option>
         <option value="JS Fundamentals">JS Fundamentals</option>
-        <option value="CSS Fundamentals">JS Fundamentals</option>
+        <option value="CSS Fundamentals">CSS Fundamentals</option>
         <option value="Data/Algorithms">Data/Algorithms</option>
         <option value="React/Redux">React/Redux</option>
         <option value="Node/Express">Node/Express</option>

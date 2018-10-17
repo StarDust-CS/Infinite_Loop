@@ -8,6 +8,7 @@ const TicketComponent = (props) => {
     title, problem, expect, tried, hypo,
   } = ticket;
   const fellow = [];
+  const buttons = [];
   const ticketHeader = [];
   if (status === 'OPEN') {
     ticketHeader.push(
@@ -97,6 +98,17 @@ const TicketComponent = (props) => {
     );
   }
 
+  buttons.push(
+    <div className="main-ticket-button-container">
+      <button className="main-ticket-button" type="button">
+        EDIT
+      </button>
+      <button className="main-ticket-button" type="button">
+        CLOSE
+      </button>
+    </div>,
+  );
+
   return (
     <div className="main-ticket-container">
       {ticketHeader}
@@ -127,6 +139,8 @@ const TicketComponent = (props) => {
       <div className="main-ticket-body">
         {hypo}
       </div>
+
+      {buttons}
 
       {fellow}
       

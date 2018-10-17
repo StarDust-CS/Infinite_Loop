@@ -12,7 +12,7 @@ const Main = (props) => {
     filterConfig, formDisplay, ticketDisplay, userInfo,
     logInFormFields, registerFormFields, ticketFormFields,
     showForm, submitLogIn, submitRegister, submitTicket,
-    updateFilterConfig, updateLogInForm, updateRegisterForm, updateTicketForm,
+    updateFilterConfig, updateLogInForm, updateRegisterForm, updateTicketForm, updateTicket
   } = props;
   const display = [];
   if (formDisplay.showForm && formDisplay.formName === 'login') {
@@ -45,7 +45,26 @@ const Main = (props) => {
       updateFilterConfig={updateFilterConfig}
     />);
     ticketDisplay.forEach((ticket) => {
-      display.push(<TicketComponent ticket={ticket} />);
+      if ((ticket.status === filterConfig.status || filterConfig.status === 'ANY STATUS') && (ticket.category === filterConfig.category || filterConfig.category === 'ANY CATEGORY')) {
+        display.push(<TicketComponent ticket={ticket} />);
+      }
+      if (display.length <= 1) {
+        display.push(
+          <div className="main-no-tickets">
+            <div>
+              <img src="http://www.burfeind.net/images/comics/mailbox.gif" alt="empty mailbox" />
+              <br />
+              No Matching
+              <br />
+              Tickets Found
+            </div>
+          </div>,
+        );
+      } else if (display.length > 1) {
+        if (display[1].props.className === 'main-no-tickets') {
+          display.splice(1, 1);
+        }
+      }
     });
   }
   return (

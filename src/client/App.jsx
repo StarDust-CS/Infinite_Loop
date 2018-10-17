@@ -55,19 +55,51 @@ const defaultFormDisplay = {
 
 // Default Filters
 const defaultFilterConfig = {
-  status: 'ALL',
-  category: 'ALL',
+  status: 'ANY STATUS',
+  category: 'ANY CATEGORY',
 };
 
 // TODO: DELETE - Sample Tickets
-const sampleTicket3 = {
+const sampleTicket5 = {
   status: 'OPEN',
+  ticketID: 5,
+  title: 'Events In Redux',
+  studentFullName: 'Sam Ratemo',
+  cohort: 24,
+  createdAt: new Date(),
+  fellowFullName: '',
+  closedFullName: '',
+  category: 'React/Redux',
+  problem: 'Not able to use the event that I pass as a payload to change state. Also doesnt let me type to the form',
+  expect: 'To be able to type and save the result to the state',
+  tried: 'Googling and inspecting my code',
+  hypo: 'Not using onchange react method?',
+};
+
+const sampleTicket4 = {
+  status: 'OPEN',
+  ticketID: 4,
+  title: 'Redux Null Error',
+  studentFullName: 'Sam Ratemo',
+  cohort: 24,
+  createdAt: new Date(),
+  fellowFullName: '',
+  closedFullName: '',
+  category: 'React/Redux',
+  problem: 'Getting an \'null\' error why I try to pass data down from the state',
+  expect: 'I expect to render a component',
+  tried: 'Tried looking at my reducers and how im defining the state. I cant quite tell why im getting a null error',
+  hypo: 'I probably need to change something in the reducers',
+};
+
+const sampleTicket3 = {
+  status: 'IN PROGRESS',
   ticketID: 3,
   title: 'Data Rendering in React',
   studentFullName: 'Joel Perkins',
   cohort: 24,
   createdAt: new Date(),
-  fellowFullName: '',
+  fellowFullName: 'Colin McCarthy',
   closedFullName: '',
   category: 'React/Redux',
   problem: 'trouble getting data to render on the page',
@@ -116,11 +148,12 @@ class App extends Component {
       registerFormFields: blankRegisterForm,
       ticketFormFields: blankTicketForm,
       userInfo: blankUser,
-      ticketDisplay: [sampleTicket3, sampleTicket2, sampleTicket1],
+      ticketDisplay: [sampleTicket5, sampleTicket4, sampleTicket3, sampleTicket2, sampleTicket1],
       formDisplay: defaultFormDisplay,
       filterConfig: defaultFilterConfig,
     };
 
+    this.fetchTickets = this.fetchTickets.bind(this);
     this.showForm = this.showForm.bind(this);
     this.submitLogIn = this.submitLogIn.bind(this);
     this.submitRegister = this.submitRegister.bind(this);
@@ -129,6 +162,14 @@ class App extends Component {
     this.updateLogInForm = this.updateLogInForm.bind(this);
     this.updateRegisterForm = this.updateRegisterForm.bind(this);
     this.updateTicketForm = this.updateTicketForm.bind(this);
+    // this.updateTicket = this.updateTicket.bind(this);
+  }
+  // Handler to fetch tickets and populate ticketDisplay
+  fetchTickets() {
+    fetch('/ticket')
+    .then(data => data.json)
+    .then(data => console.log(data))
+    .catch(err => console.error(err));
   }
 
   // Handler to show the login, registration, or ticket form
@@ -168,6 +209,7 @@ class App extends Component {
         newUserInfo.userID = data._id;
         const newFormDisplay = defaultFormDisplay;
         newFormDisplay.showForm = false;
+        this.fetchTickets();
         this.setState({
           formDisplay: newFormDisplay,
           logInFormFields: blankLogInForm,
@@ -202,6 +244,7 @@ class App extends Component {
           newUserInfo.userID = data._id;
           const newFormDisplay = defaultFormDisplay;
           newFormDisplay.showForm = false;
+          this.fetchTickets();
           this.setState({
             formDisplay: newFormDisplay,
             logInFormFields: blankLogInForm,
@@ -276,6 +319,10 @@ class App extends Component {
     this.setState({ ticketFormFields: newTicketFormFields });
   }
 
+  // updateTicket(event) {
+    
+  // }
+
   render() {
     const {
       filterConfig, formDisplay, userInfo, logInFormFields, registerFormFields, ticketFormFields, ticketDisplay,
@@ -303,6 +350,7 @@ class App extends Component {
           updateLogInForm={this.updateLogInForm}
           updateRegisterForm={this.updateRegisterForm}
           updateTicketForm={this.updateTicketForm}
+          updateTicket={this.updateTicket}
         />
       </div>
     );
