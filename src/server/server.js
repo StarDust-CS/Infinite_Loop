@@ -13,44 +13,40 @@ const ticketController = require('./controller/ticketController');
 app.use(bodyParser.json());
 app.use(cookieParser());
 app.use(cors());
-
-app.get('/login',
+/* ROUTING ON: User */
+app.get('/',
+  cookieController.setCookie,
   (req, res) => {
-    res.render(/* Path to login page */);
+    res.status(200).send({ msg: 'cookie created ' });
   });
 
-app.get('/signup',
-  // userController.createUser,
-  (req, res) => {
-    res.render(/* Path to signup page */);
-  });
-
+/* ROUTING ON: User log in */
 app.post('/login',
   userController.verifyUser,
+  cookieController.setSSIDCookie,
   // set ssid
-  // set cookie
   (req, res) => {
     res.status(200).json(res.locals.verifiedUser);
-    // res.render(/* Path to user dashboard page */);
   });
 
+/* ROUTING ON: User sign up */
 app.post('/signup',
   userController.checkEmailExists,
   userController.createUser,
+  cookieController.setSSIDCookie,
   // set ssid
-  // set cookie
   (req, res) => {
     res.status(200).json(res.locals.newUser);
-    // res.render(/* Path to main dashboard page */);
   });
 
+/* ROUTING ON: User submits help ticket */
 app.post('/ticket',
   ticketController.addTicket,
   (req, res) => {
     res.status(200).json(res.locals.newTicket);
   });
 
-// below unchanged
+// below unchanged from scratch project
 
 app.use(express.static(__dirname + '/../../dist'));
 
