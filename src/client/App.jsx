@@ -3,9 +3,6 @@ import React, { Component } from 'react';
 import Header from './components/Header.jsx';
 import Main from './components/Main.jsx';
 
-import PostSection from './components/PostSection.jsx';
-import CreateSection from './components/CreateSection.jsx';
-
 // Import App Styling
 import './App.css';
 
@@ -49,18 +46,54 @@ const blankUser = {
   userID: 0,
 };
 
-// Pre-LogIn Blank Ticket Array
-const blankTicketDisplay = {
-  notStarted: [],
-  inProgress: [],
-  closed: [],
-};
-
 // Pre-LogIn Form Display (default: show page 1 of login form)
 const defaultFormDisplay = {
   showForm: true,
   formName: 'login',
   formPage: 1,
+};
+
+// TODO: DELETE - Sample Tickets
+const sampleTicket1 = {
+  status: 'OPEN',
+  ticketID: 3,
+  title: 'Data Rendering in React',
+  studentFullName: 'Joel Perkins',
+  createdAt: new Date(),
+  fellowFullName: '',
+  category: 'React/Redux',
+  problem: 'trouble getting data to render on the page',
+  expect: 'updating state with incoming data, using thunk to wait for the data. It console logs aftert it arrives however we are unsure if it is saving to the state properly',
+  tried: 'google, console logging data..console logs come back as undefined',
+  hypo: 'dispatch is not firing to update the store properly',
+};
+
+const sampleTicket2 = {
+  status: 'IN PROGRESS',
+  ticketID: 2,
+  title: 'React Component Reuse',
+  studentFullName: 'Ha-Rry Kim',
+  createdAt: new Date(),
+  fellowFullName: 'Stephanie Fong',
+  category: 'React/Redux',
+  problem: 'Having trouble reusing same component for react',
+  expect: 'Render on browser',
+  tried: 'Make separate component to pass down the prop',
+  hypo: 'It is not recognizing props?',
+};
+
+const sampleTicket3 = {
+  status: 'CLOSED',
+  ticketID: 1,
+  title: 'Website Code Loading',
+  studentFullName: 'Elliot Kim',
+  createdAt: new Date(),
+  fellowFullName: '',
+  category: 'JS Fundamentals',
+  problem: 'Load our code onto webpage',
+  expect: 'Code loading onto webpage',
+  tried: 'Tried to research errors and also tried commenting out things to figure out why it is not loading',
+  hypo: 'Because I am a WINNER (thanks Sam), just not this time',
 };
 
 class App extends Component {
@@ -71,16 +104,11 @@ class App extends Component {
       registerFormFields: blankRegisterForm,
       ticketFormFields: blankTicketForm,
       userInfo: blankUser,
-      ticketDisplay: blankTicketDisplay,
+      ticketDisplay: [sampleTicket1, sampleTicket2, sampleTicket3],
       formDisplay: defaultFormDisplay,
     };
 
-    this.changeStatus = this.changeStatus.bind(this);
-    this.fetchData = this.fetchData.bind(this);
     this.showForm = this.showForm.bind(this);
-    this.onLoginHandler = this.onLoginHandler.bind(this);
-    this.onSignupChangedHandler = this.onSignupChangedHandler.bind(this);
-    this.onSignupSubmitHandler = this.onSignupSubmitHandler.bind(this);
     this.submitLogIn = this.submitLogIn.bind(this);
     this.submitRegister = this.submitRegister.bind(this);
     this.submitTicket = this.submitTicket.bind(this);
@@ -89,42 +117,27 @@ class App extends Component {
     this.updateTicketForm = this.updateTicketForm.bind(this);
   }
 
-  // Handler to update state as user fills in sign-in form role
-  onSignupChangedHandler(event) {
-    const newState = Object.assign({}, this.state);
-    newState.role = event.currentTarget.value;
-    this.setState(newState);
-  }
-
-  // Upon Successful Log-In, set loggedIn to true, set logged in userid
-  onLoginHandler(userid) {
-    const newState = Object.assign({}, this.state);
-    newState.loggedIn = true;
-    newState.userid = userid;
-    this.setState(newState);
-  }
-
-  // Upon Sign-Up, POST registration inputs and pass userID into Log-In Handler
-  onSignupSubmitHandler() {
-    const { name, role } = this.state;
-    fetch('http://localhost:3000/createuser', {
-      method: 'POST',
-      body: JSON.stringify({
-        name,
-        role,
-      }),
-      headers: { 'Content-Type': 'application/json' },
-    })
-      .then(data => data.json())
-      .then(data => this.onLoginHandler(data.id))
-      .then(() => this.fetchData())
-      .catch(err => console.error(err));
+  // Handler to show the login, registration, or ticket form
+  showForm(event) {
+    const { ticketFormFields, userInfo } = this.state;
+    const newTicketFormFields = { ...ticketFormFields };
+    const newFormDisplay = {
+      showForm: true,
+      formName: event.target.value,
+      formPage: 1,
+    };
+    if (event.target.value === 'ticket') {
+      newTicketFormFields.studentID = userInfo.userID;
+    }
+    this.setState({
+      formDisplay: newFormDisplay,
+      ticketFormFields: newTicketFormFields,
+    });
   }
 
   // Handler for login form submission
   submitLogIn() {
-    const { logInFormFields, userInfo } = this.state;
-    const { loggedIn, firstName, lastName, role, userID } = userInfo;
+    const { logInFormFields } = this.state;
     fetch('http://localhost:3000/login', {
       method: 'POST',
       headers: {
@@ -139,8 +152,10 @@ class App extends Component {
         newUserInfo.lastName = data.lastName;
         newUserInfo.role = data.role;
         newUserInfo.userID = data._id;
+        const newFormDisplay = defaultFormDisplay;
+        newFormDisplay.showForm = false;
         this.setState({
-          formDisplay: defaultFormDisplay,
+          formDisplay: newFormDisplay,
           logInFormFields: blankLogInForm,
           userInfo: newUserInfo,
         });
@@ -185,24 +200,6 @@ class App extends Component {
     }
   }
 
-  // Handler to show registration form
-  showForm(event) {
-    const { ticketFormFields, userInfo } = this.state;
-    const newTicketFormFields = { ...ticketFormFields };
-    const newFormDisplay = {
-      showForm: true,
-      formName: event.target.value,
-      formPage: 1,
-    };
-    if (event.target.value === 'ticket') {
-      newTicketFormFields.studentID = userInfo.userID;
-    }
-    this.setState({
-      formDisplay: newFormDisplay,
-      ticketFormFields: newTicketFormFields,
-    });
-  }
-
   // Handler to update state if user fills in login form
   updateLogInForm(event) {
     const { logInFormFields } = this.state;
@@ -233,62 +230,10 @@ class App extends Component {
     this.setState({ ticketFormFields: newTicketFormFields });
   }
 
-  // PATCH updates to post database
-  changeStatus(userId, postStatus, postId) {
-    fetch('http://localhost:3000/status', {
-      headers: { 'Content-Type': 'application/json' },
-      method: 'PATCH',
-      body: JSON.stringify({
-        status: postStatus,
-        postid: postId,
-        userid: userId,
-      }),
-    })
-      .then(() => this.fetchData())
-      .catch(err => console.error(err));
-  }
-
-  // GET posts from database to show in front-end
-  fetchData() {
-    const notStarted = [];
-    const inProgress = [];
-    const closed = [];
-    fetch('http://localhost:3000/home', {
-      method: 'GET',
-      headers: { 'Content-Type': 'application/json' },
-    })
-      .then(posts => posts.json())
-      .then((posts) => {
-        posts.forEach((post) => {
-          if (post.status === 'open') {
-            notStarted.push(post);
-          }
-          if (post.status === 'claimed') {
-            inProgress.push(post);
-          }
-          if (post.status === 'closed') {
-            closed.push(post);
-          }
-        });
-        const newState = Object.assign({}, this.state);
-        newState.notStarted = notStarted;
-        newState.inProgress = inProgress;
-        newState.closed = closed;
-        this.setState(newState);
-      })
-      .catch(err => console.error(err));
-  }
-
   render() {
     const {
-      name, notStarted, formDisplay, inProgress, closed, role, loggedIn, userInfo, logInFormFields, registerFormFields, formPage, ticketFormFields,
+      formDisplay, userInfo, logInFormFields, registerFormFields, ticketFormFields, ticketDisplay,
     } = this.state;
-    const render = [];
-    if (loggedIn) render.push(
-      <div>
-        <CreateSection userid={userid} fetchData={this.fetchData} />
-        <PostSection changeStatus={this.changeStatus} name={name} notStarted={notStarted} inProgress={inProgress} closed={closed} role={role} />
-      </div>);
     return (
       <div className="app-container">
         <Header
@@ -299,6 +244,7 @@ class App extends Component {
           logInFormFields={logInFormFields}
           registerFormFields={registerFormFields}
           ticketFormFields={ticketFormFields}
+          ticketDisplay={ticketDisplay}
           userInfo={userInfo}
           showForm={this.showForm}
           submitLogIn={this.submitLogIn}
@@ -308,7 +254,6 @@ class App extends Component {
           updateRegisterForm={this.updateRegisterForm}
           updateTicketForm={this.updateTicketForm}
         />
-        {render}
       </div>
     );
   }
