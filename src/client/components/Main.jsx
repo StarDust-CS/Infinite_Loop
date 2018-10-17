@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 
+import FilterComponent from './FilterComponent.jsx';
 import LogInFormComponent from './LogInFormComponent.jsx';
 import RegisterFormComponent from './RegisterFormComponent.jsx';
 import TicketFormComponent from './TicketFormComponent.jsx';
@@ -8,10 +9,10 @@ import TicketComponent from './TicketComponent.jsx';
 
 const Main = (props) => {
   const {
-    formDisplay, ticketDisplay, userInfo,
+    filterConfig, formDisplay, ticketDisplay, userInfo,
     logInFormFields, registerFormFields, ticketFormFields,
     showForm, submitLogIn, submitRegister, submitTicket,
-    updateLogInForm, updateRegisterForm, updateTicketForm,
+    updateFilterConfig, updateLogInForm, updateRegisterForm, updateTicketForm,
   } = props;
   const display = [];
   if (formDisplay.showForm && formDisplay.formName === 'login') {
@@ -39,6 +40,10 @@ const Main = (props) => {
       updateTicketForm={updateTicketForm}
     />);
   } else if (!formDisplay.showForm) {
+    display.push(<FilterComponent
+      filterConfig={filterConfig}
+      updateFilterConfig={updateFilterConfig}
+    />);
     ticketDisplay.forEach((ticket) => {
       display.push(<TicketComponent ticket={ticket} />);
     });
@@ -55,6 +60,7 @@ Main.propTypes = {
   submitLogIn: PropTypes.func.isRequired,
   submitRegister: PropTypes.func.isRequired,
   submitTicket: PropTypes.func.isRequired,
+  updateFilterConfig: PropTypes.func.isRequired,
   updateLogInForm: PropTypes.func.isRequired,
   updateRegisterForm: PropTypes.func.isRequired,
   updateTicketForm: PropTypes.func.isRequired,

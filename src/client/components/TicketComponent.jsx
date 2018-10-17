@@ -32,6 +32,11 @@ const TicketComponent = (props) => {
         <span className="main-ticket-author-text">Student: {studentFullName} (Cohort {cohort})</span>
       </div>,
     );
+    fellow.push(
+      <div className="main-ticket-footer">
+        <span className="main-ticket-footer-text">Fellow: NOT YET CLAIMED</span>
+      </div>,
+    );
   }
   if (status === 'IN PROGRESS') {
     ticketHeader.push(

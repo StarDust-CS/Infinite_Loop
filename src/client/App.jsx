@@ -53,23 +53,13 @@ const defaultFormDisplay = {
   formPage: 1,
 };
 
-// TODO: DELETE - Sample Tickets
-const sampleTicket4 = {
-  status: 'OPEN',
-  ticketID: 4,
-  title: '28CHARSXXXXXXXXX18',
-  studentFullName: 'Serge Vartanov',
-  cohort: 24,
-  createdAt: new Date(),
-  fellowFullName: '',
-  closedFullName: '',
-  category: 'CSS Fundamentals',
-  problem: '120CHARSXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx120',
-  expect: '120CHARSXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx120',
-  tried: '120CHARSXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx120',
-  hypo: '120CHARSXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx120',
+// Default Filters
+const defaultFilterConfig = {
+  status: 'ALL',
+  category: 'ALL',
 };
 
+// TODO: DELETE - Sample Tickets
 const sampleTicket3 = {
   status: 'OPEN',
   ticketID: 3,
@@ -126,14 +116,16 @@ class App extends Component {
       registerFormFields: blankRegisterForm,
       ticketFormFields: blankTicketForm,
       userInfo: blankUser,
-      ticketDisplay: [sampleTicket4, sampleTicket3, sampleTicket2, sampleTicket1],
+      ticketDisplay: [sampleTicket3, sampleTicket2, sampleTicket1],
       formDisplay: defaultFormDisplay,
+      filterConfig: defaultFilterConfig,
     };
 
     this.showForm = this.showForm.bind(this);
     this.submitLogIn = this.submitLogIn.bind(this);
     this.submitRegister = this.submitRegister.bind(this);
     this.submitTicket = this.submitTicket.bind(this);
+    this.updateFilterConfig = this.updateFilterConfig.bind(this);
     this.updateLogInForm = this.updateLogInForm.bind(this);
     this.updateRegisterForm = this.updateRegisterForm.bind(this);
     this.updateTicketForm = this.updateTicketForm.bind(this);
@@ -231,8 +223,28 @@ class App extends Component {
       newFormFields.createdAt = Date.now();
       this.setState({ formDisplay: newFormDisplay, ticketFormFields: newFormFields });
     } else if (event.target.value === 'Submit') {
-      this.setState({ formDisplay: defaultFormDisplay, ticketFormFields: blankTicketForm });
+      fetch('http://localhost:3000/ticket', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json; charset=utf-8',
+        },
+        body: JSON.stringify(ticketFormFields),
+      })
+        .then((data) => {
+          const newFormDisplay = defaultFormDisplay;
+          newFormDisplay.showForm = false;
+          this.setState({ formDisplay: defaultFormDisplay, ticketFormFields: blankTicketForm });
+        })
+        .catch(err => console.error(err));
     }
+  }
+
+  // Handler to update Filter Configuration if user changes filters
+  updateFilterConfig(event) {
+    const { filterConfig } = this.state;
+    const newFilterConfig = { ...filterConfig };
+    newFilterConfig[event.target.name] = event.target.value;
+    this.setState({ filterConfig: newFilterConfig });
   }
 
   // Handler to update state if user fills in login form
@@ -267,15 +279,17 @@ class App extends Component {
 
   render() {
     const {
-      formDisplay, userInfo, logInFormFields, registerFormFields, ticketFormFields, ticketDisplay,
+      filterConfig, formDisplay, userInfo, logInFormFields, registerFormFields, ticketFormFields, ticketDisplay,
     } = this.state;
+    const { role } = userInfo;
     return (
       <div className="app-container">
         <Header
-          userRole={userInfo.role}
+          userRole={role}
           showForm={this.showForm}
         />
         <Main
+          filterConfig={filterConfig}
           formDisplay={formDisplay}
           logInFormFields={logInFormFields}
           registerFormFields={registerFormFields}
@@ -286,6 +300,7 @@ class App extends Component {
           submitLogIn={this.submitLogIn}
           submitRegister={this.submitRegister}
           submitTicket={this.submitTicket}
+          updateFilterConfig={this.updateFilterConfig}
           updateLogInForm={this.updateLogInForm}
           updateRegisterForm={this.updateRegisterForm}
           updateTicketForm={this.updateTicketForm}
