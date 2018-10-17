@@ -8,6 +8,7 @@ const app = express();
 const userController = require('./controller/userController');
 const postController = require('./controller/postController');
 const cookieController = require('./controller/cookieController');
+const ticketController = require('./controller/ticketController');
 
 app.use(bodyParser.json());
 app.use(cookieParser());
@@ -41,6 +42,12 @@ app.post('/signup',
   (req, res) => {
     res.status(200).json(res.locals.newUser);
     // res.render(/* Path to main dashboard page */);
+  });
+
+app.post('/ticket',
+  ticketController.addTicket,
+  (req, res) => {
+    res.status(200).json(res.locals.newTicket);
   });
 
 // below unchanged
