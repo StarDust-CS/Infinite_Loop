@@ -54,16 +54,34 @@ const defaultFormDisplay = {
 };
 
 // TODO: DELETE - Sample Tickets
-const sampleTicket1 = {
+const sampleTicket4 = {
+  status: 'OPEN',
+  ticketID: 4,
+  title: '28CHARSXXXXXXXXX18',
+  studentFullName: 'Serge Vartanov',
+  cohort: 24,
+  createdAt: new Date(),
+  fellowFullName: '',
+  closedFullName: '',
+  category: 'CSS Fundamentals',
+  problem: '120CHARSXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx120',
+  expect: '120CHARSXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx120',
+  tried: '120CHARSXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx120',
+  hypo: '120CHARSXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx120',
+};
+
+const sampleTicket3 = {
   status: 'OPEN',
   ticketID: 3,
   title: 'Data Rendering in React',
   studentFullName: 'Joel Perkins',
+  cohort: 24,
   createdAt: new Date(),
   fellowFullName: '',
+  closedFullName: '',
   category: 'React/Redux',
   problem: 'trouble getting data to render on the page',
-  expect: 'updating state with incoming data, using thunk to wait for the data. It console logs aftert it arrives however we are unsure if it is saving to the state properly',
+  expect: 'updating state with incoming data, using thunk to wait for the data. It console logs aftert it arrives however we are unsure if it is saving to the state',
   tried: 'google, console logging data..console logs come back as undefined',
   hypo: 'dispatch is not firing to update the store properly',
 };
@@ -73,8 +91,10 @@ const sampleTicket2 = {
   ticketID: 2,
   title: 'React Component Reuse',
   studentFullName: 'Ha-Rry Kim',
+  cohort: 24,
   createdAt: new Date(),
   fellowFullName: 'Stephanie Fong',
+  closedFullName: '',
   category: 'React/Redux',
   problem: 'Having trouble reusing same component for react',
   expect: 'Render on browser',
@@ -82,13 +102,15 @@ const sampleTicket2 = {
   hypo: 'It is not recognizing props?',
 };
 
-const sampleTicket3 = {
+const sampleTicket1 = {
   status: 'CLOSED',
   ticketID: 1,
   title: 'Website Code Loading',
   studentFullName: 'Elliot Kim',
+  cohort: 24,
   createdAt: new Date(),
-  fellowFullName: '',
+  fellowFullName: 'Sam Goldberg',
+  closedFullName: 'Sam Goldberg',
   category: 'JS Fundamentals',
   problem: 'Load our code onto webpage',
   expect: 'Code loading onto webpage',
@@ -104,7 +126,7 @@ class App extends Component {
       registerFormFields: blankRegisterForm,
       ticketFormFields: blankTicketForm,
       userInfo: blankUser,
-      ticketDisplay: [sampleTicket1, sampleTicket2, sampleTicket3],
+      ticketDisplay: [sampleTicket4, sampleTicket3, sampleTicket2, sampleTicket1],
       formDisplay: defaultFormDisplay,
     };
 
@@ -180,8 +202,20 @@ class App extends Component {
         body: JSON.stringify(registerFormFields),
       })
         .then(data => data.json())
-        .then(data => console.log(data))
-        .then(data => this.setState({ formDisplay: defaultFormDisplay }))
+        .then((data) => {
+          const newUserInfo = { loggedIn: true };
+          newUserInfo.firstName = data.firstName;
+          newUserInfo.lastName = data.lastName;
+          newUserInfo.role = data.role;
+          newUserInfo.userID = data._id;
+          const newFormDisplay = defaultFormDisplay;
+          newFormDisplay.showForm = false;
+          this.setState({
+            formDisplay: newFormDisplay,
+            logInFormFields: blankLogInForm,
+            userInfo: newUserInfo,
+          });
+        })
         .catch(err => console.error(err));
     }
   }
@@ -237,6 +271,7 @@ class App extends Component {
     return (
       <div className="app-container">
         <Header
+          userRole={userInfo.role}
           showForm={this.showForm}
         />
         <Main
