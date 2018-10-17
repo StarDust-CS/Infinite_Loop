@@ -2,12 +2,16 @@
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
 
 const app = express();
 const userController = require('./controller/userController');
 const postController = require('./controller/postController');
+const cookieController = require('./controller/cookieController');
+const ticketController = require('./controller/ticketController');
 
 app.use(bodyParser.json());
+app.use(cookieParser());
 app.use(cors());
 
 app.get('/login',
@@ -26,7 +30,7 @@ app.post('/login',
   // set ssid
   // set cookie
   (req, res) => {
-    res.status(200).send({ msg: 'you logged in' });
+    res.status(200).json(res.locals.verifiedUser);
     // res.render(/* Path to user dashboard page */);
   });
 
@@ -36,32 +40,15 @@ app.post('/signup',
   // set ssid
   // set cookie
   (req, res) => {
-    res.status(200).send({ msg: 'signed up ok' });
-    //res.render(/* Path to main dashboard page */);
+    res.status(200).json(res.locals.newUser);
+    // res.render(/* Path to main dashboard page */);
   });
 
-// app.post('/createuser',
-//   userController.verifyUser,
-//   userController.createUser,
-//   (req, res) => {
-//     res.status(200).json(res.locals.data);
-//   }
-// )
-// app.post('/createpost',
-//   postController.createPost,
-//   (req, res) => {
-//     res.status(200).json(res.locals.data);
-//   });
-// app.get('/home',
-//   postController.getPosts,
-//   (req, res) => {
-//     res.status(200).json(res.locals.data);
-//   });
-// app.patch('/status',
-//   postController.changeStatus,
-//   (req, res) => {
-//     res.status(200).json(res.locals.data);
-//   });
+app.post('/ticket',
+  ticketController.addTicket,
+  (req, res) => {
+    res.status(200).json(res.locals.newTicket);
+  });
 
 // below unchanged
 
@@ -75,6 +62,3 @@ app.use((err, req, res, next) => {
 module.exports = app.listen(3000, () => {
   console.log('Listening on port 3000...');
 });
-
-
-

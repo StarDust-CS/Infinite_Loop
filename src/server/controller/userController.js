@@ -25,9 +25,15 @@ module.exports = {
     const userInputs = [firstName, lastName, email, password, cohort, role];
 
     const addNewUser = () => {
-      db.one('INSERT INTO users("first_name", "last_name", "email", "password", "cohort", "role") VALUES($1, $2, $3, $4, $5, $6)', userInputs)
+      db.one('INSERT INTO users("first_name", "last_name", "email", "password", "cohort", "role") VALUES($1, $2, $3, $4, $5, $6) RETURNING *', userInputs)
         .then((data) => {
-          res.locals.newUser = data;
+          const {
+            _id,
+            first_name,
+            last_name,
+            role,
+          } = data;
+          res.locals.newUser = { _id, first_name, last_name, role };
           return next();
         })
         .catch(err => console.error(err));
@@ -73,7 +79,11 @@ module.exports = {
       .then((data) => {
         const user = data[0];
         bcrypt.compare(password, user.password, (error, resolve) => {
-          if (resolve) return next();
+          if (resolve) {
+            const { _id, first_name, last_name, role } = user;
+            res.locals.verifiedUser = { _id, first_name, last_name, role };
+            return next();
+          }
           return res.status(400).send({ msg: 'incorrect password' });
         });
       })

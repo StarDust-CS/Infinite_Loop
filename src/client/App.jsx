@@ -147,9 +147,10 @@ class App extends Component {
     })
       .then(data => data.json())
       .then((data) => {
+        console.log(data);
         const newUserInfo = { loggedIn: true };
-        newUserInfo.firstName = data.firstName;
-        newUserInfo.lastName = data.lastName;
+        newUserInfo.firstName = data.first_name;
+        newUserInfo.lastName = data.last_name;
         newUserInfo.role = data.role;
         newUserInfo.userID = data._id;
         const newFormDisplay = defaultFormDisplay;
