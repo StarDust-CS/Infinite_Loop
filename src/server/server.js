@@ -39,7 +39,7 @@ app.post('/signup',
   // set ssid
   // set cookie
   (req, res) => {
-    res.status(200).json({ msg: 'signed up ok' });
+    res.status(200).json(res.locals.newUser);
     // res.render(/* Path to main dashboard page */);
   });
 
