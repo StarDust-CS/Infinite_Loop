@@ -1,6 +1,7 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 
-import csLogoURL from "../../../images/codesmith-logo.svg";
+import csLogoURL from '../../../images/codesmith-logo.svg';
 
 const Header = (props) => {
   const { showForm } = props;
@@ -16,6 +17,10 @@ const Header = (props) => {
       </div>
     </header>
   );
+};
+
+Header.propTypes = {
+  showForm: PropTypes.func.isRequired,
 };
 
 export default Header;
