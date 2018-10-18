@@ -2,7 +2,7 @@ import React from 'React';
 import PropTypes from 'prop-types';
 
 const TicketComponent = (props) => {
-  const { ticket } = props;
+  const { ticket, userInfo, updateTicket } = props;
   const {
     ticketID, createdAt, cohort, studentFullName, fellowFullName, closedFullName, status, category,
     title, problem, expect, tried, hypo,
@@ -99,15 +99,24 @@ const TicketComponent = (props) => {
   }
 
   buttons.push(
-    <div className="main-ticket-button-container">
-      <button className="main-ticket-button" type="button">
-        EDIT
-      </button>
-      <button className="main-ticket-button" type="button">
-        CLOSE
-      </button>
-    </div>,
+    <button className="main-ticket-button" type="button">
+      EDIT
+    </button>,
   );
+
+  if (userInfo.role === 'Student') {
+    buttons.push(
+      <button className="main-ticket-button" onClick={() => updateTicket('CLOSED', ticketID, userInfo.userID)} type="button">
+        CLOSE
+      </button>,
+    );
+  } else if (userInfo.role === 'Fellow') {
+    buttons.push(
+      <button className="main-ticket-button" onClick={() => updateTicket('IN PROGRESS', ticketID, userInfo.userID)} type="button">
+        CLAIM
+      </button>,
+    );
+  }
 
   return (
     <div className="main-ticket-container">
@@ -140,7 +149,9 @@ const TicketComponent = (props) => {
         {hypo}
       </div>
 
-      {buttons}
+      <div className="main-ticket-button-container">
+        {buttons}
+      </div>
 
       {fellow}
       
@@ -167,6 +178,14 @@ TicketComponent.propTypes = {
     tried: PropTypes.string.isRequired,
     hypo: PropTypes.string.isRequired,
   }).isRequired,
+  userInfo: PropTypes.shape({
+    loggedIn: PropTypes.bool.isRequired,
+    firstName: PropTypes.string.isRequired,
+    lastName: PropTypes.string.isRequired,
+    role: PropTypes.string.isRequired,
+    userID: PropTypes.number.isRequired,
+  }).isRequired,
+  updateTicket: PropTypes.func.isRequired,
 };
 
 export default TicketComponent;

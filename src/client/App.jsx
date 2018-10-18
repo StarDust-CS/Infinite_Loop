@@ -6,58 +6,13 @@ import Main from './components/Main.jsx';
 // Import App Styling
 import './App.css';
 
-// Blank LogIn Form
-const blankLogInForm = {
-  email: '',
-  password: '',
-  remember: true,
-};
+// Import and destructure default state for user and ticket forms
+import defaultState from './defaultState';
 
-// Blank Registration Form
-const blankRegisterForm = {
-  cohort: 0,
-  role: '',
-  firstName: '',
-  lastName: '',
-  email: '',
-  password: '',
-  code: '',
-};
-
-// Blank Ticket Form
-const blankTicketForm = {
-  createdAt: Date.now(),
-  studentID: 0,
-  status: 'Open',
-  category: '',
-  title: '',
-  problem: '',
-  expect: '',
-  tried: '',
-  hypo: '',
-};
-
-// Pre-LogIn Blank User
-const blankUser = {
-  loggedIn: false,
-  firstName: '',
-  lastName: '',
-  role: '',
-  userID: 0,
-};
-
-// Pre-LogIn Form Display (default: show page 1 of login form)
-const defaultFormDisplay = {
-  showForm: true,
-  formName: 'login',
-  formPage: 1,
-};
-
-// Default Filters
-const defaultFilterConfig = {
-  status: 'ANY STATUS',
-  category: 'ANY CATEGORY',
-};
+const {
+  blankLogInForm, blankRegisterForm, blankTicketForm,
+  blankUser, defaultFormDisplay, defaultFilterConfig,
+} = defaultState;
 
 // TODO: DELETE - Sample Tickets
 const sampleTicket5 = {
@@ -162,14 +117,23 @@ class App extends Component {
     this.updateLogInForm = this.updateLogInForm.bind(this);
     this.updateRegisterForm = this.updateRegisterForm.bind(this);
     this.updateTicketForm = this.updateTicketForm.bind(this);
-    // this.updateTicket = this.updateTicket.bind(this);
+    this.updateTicket = this.updateTicket.bind(this);
   }
+
   // Handler to fetch tickets and populate ticketDisplay
   fetchTickets() {
+    const newTicketDisplay = [sampleTicket5, sampleTicket4, sampleTicket3, sampleTicket2, sampleTicket1];
     fetch('/ticket')
-    .then(data => data.json)
-    .then(data => console.log(data))
-    .catch(err => console.error(err));
+      .then(data => data.json())
+      .then((data) => {
+        data.forEach((ticket) => {
+          ticket.status = ticket.status.toUpperCase();
+          ticket.createdAt = new Date(ticket.createdAt);
+          newTicketDisplay.unshift(ticket);
+        });
+        this.setState({ ticketDisplay: newTicketDisplay });
+      })
+      .catch(err => console.error(err));
   }
 
   // Handler to show the login, registration, or ticket form
@@ -319,9 +283,29 @@ class App extends Component {
     this.setState({ ticketFormFields: newTicketFormFields });
   }
 
-  // updateTicket(event) {
-    
-  // }
+  updateTicket(status, ticketID, userID) {
+    const sendObj = {};
+    if (status === 'CLOSED') {
+      sendObj.status = status;
+      sendObj.ticketID = ticketID;
+      sendObj.userID = userID;
+    }
+    fetch('http://localhost:3000/ticket', {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json; charset=utf-8',
+      },
+      body: JSON.stringify(sendObj),
+    })
+      .then((data) => data.json())
+      .then((data) => {
+        this.fetchTickets();
+        const newFormDisplay = defaultFormDisplay;
+        newFormDisplay.showForm = false;
+        this.setState({ formDisplay: defaultFormDisplay, ticketFormFields: blankTicketForm });
+      })
+      .catch(err => console.error(err));
+  }
 
   render() {
     const {

@@ -38,6 +38,7 @@ const Main = (props) => {
       ticketFormFields={ticketFormFields}
       userInfo={userInfo}
       updateTicketForm={updateTicketForm}
+      updateTicket={updateTicket}
     />);
   } else if (!formDisplay.showForm) {
     display.push(<FilterComponent
@@ -46,7 +47,7 @@ const Main = (props) => {
     />);
     ticketDisplay.forEach((ticket) => {
       if ((ticket.status === filterConfig.status || filterConfig.status === 'ANY STATUS') && (ticket.category === filterConfig.category || filterConfig.category === 'ANY CATEGORY')) {
-        display.push(<TicketComponent ticket={ticket} />);
+        display.push(<TicketComponent ticket={ticket} userInfo={userInfo} updateTicket={updateTicket} />);
       }
       if (display.length <= 1) {
         display.push(
@@ -83,6 +84,7 @@ Main.propTypes = {
   updateLogInForm: PropTypes.func.isRequired,
   updateRegisterForm: PropTypes.func.isRequired,
   updateTicketForm: PropTypes.func.isRequired,
+  updateTicket: PropTypes.func.isRequired,
 };
 
 export default Main;
