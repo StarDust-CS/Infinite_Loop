@@ -25,8 +25,8 @@ const mapStateToProps = store => ({
 
 const mapDispatchToProps = dispatch => ({
   // create functions that will dispatch action creators
-  submitLogIn: (userInfo) => {
-    dispatch(userActions.logIn(userInfo));
+   submitLogIn: (logInFormFields) => {
+    dispatch(userActions.logIn(logInFormFields));
   },
   showForm: (event) => {
     dispatch(formActions.showForm(event));

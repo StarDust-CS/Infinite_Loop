@@ -11,7 +11,8 @@ const usersReducer = (state = initialState, action) => {
   switch (action.type) {
     case types.LOG_IN: {
       //Copy initial state
-      const newState = Object.assign({}, state);
+      console.log('user payload', action.payload)
+      const newState = JSON.parse(JSON.stringify(state));
       //update state with loggedin username and usertoken
       newState.userInfo = Object.assign({}, action.payload.user )
      

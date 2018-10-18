@@ -17,7 +17,7 @@ const ticketsReducer = (state = initialState, action) => {
     case types.SHOW_FORM:
       {
         //Copy initial state
-        const newState = Object.assign({}, state);
+        const newState = JSON.parse(JSON.stringify(state));
         //create new user 
         const newFormDisplay = {
           showForm: true,
@@ -39,7 +39,6 @@ const ticketsReducer = (state = initialState, action) => {
     case types.UPDATE_FORM:
       {
         //Copy initial state
-        console.log('yy', action.payload.target)
         const newState = JSON.parse(JSON.stringify(state));
         if (action.payload.target.name === 'remember') {
           newState.logInFormFields[action.payload.target.name] = action.payload.target.checked;
@@ -61,7 +60,7 @@ const ticketsReducer = (state = initialState, action) => {
       {
 
         //Copy initial state
-        const newState = Object.assign({}, state);
+        const newState = JSON.parse(JSON.stringify(state));
 
         if (action.payload.event.target.name === 'cohort') {
           newState.registerFormFields[action.payload.event.target.name] = Number(action.payload.event.target.value);

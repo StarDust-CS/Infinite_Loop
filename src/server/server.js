@@ -39,31 +39,7 @@ app.post('/signup',
     res.status(200).send({ msg: 'signed up ok' });
     //res.render(/* Path to main dashboard page */);
   });
-
-// app.post('/createuser',
-//   userController.verifyUser,
-//   userController.createUser,
-//   (req, res) => {
-//     res.status(200).json(res.locals.data);
-//   }
-// )
-// app.post('/createpost',
-//   postController.createPost,
-//   (req, res) => {
-//     res.status(200).json(res.locals.data);
-//   });
-// app.get('/home',
-//   postController.getPosts,
-//   (req, res) => {
-//     res.status(200).json(res.locals.data);
-//   });
-// app.patch('/status',
-//   postController.changeStatus,
-//   (req, res) => {
-//     res.status(200).json(res.locals.data);
-//   });
-
-// below unchanged
+ 
 
 app.use(express.static(__dirname + '/../../dist'));
 

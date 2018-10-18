@@ -10,12 +10,7 @@
 // import actionType constants
 import * as types from '../constants/actionTypes'
 
-export const userActions = {
-  logIn,
-  register,
-  getUserById, 
-
-};
+ 
 
 /** register 
  * dispatch to reducer --> update store
@@ -34,13 +29,13 @@ const userLogin = (user) => ({
 })
 
 const getUser = (user) => ({
-  type: types.GET_TICKET_BY_ID,
+  type: types.GET_USER_BY_ID,
   payload: user
 
 })
 
 
-function register(event, logInFormFields ) {
+export function register(event, logInFormFields ) {
   return dispatch => {
     // to users reducer to update state with new user
 
@@ -59,14 +54,14 @@ function register(event, logInFormFields ) {
     }
   }
 
-function logIn(userInfo) {
+  export function logIn(userInfo) {
   return dispatch => {
     //async call to server for authentication 
     //async call to db
     fetch('http://localhost:3000/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({userInfo})
+      body: JSON.stringify(userInfo)
 
     }).then(res => res.json())
       .then(response => {
@@ -77,7 +72,7 @@ function logIn(userInfo) {
 
 }
 
-function getUserById(id) {
+export function getUserById(id) {
   return dispatch => {
     //async call to db
     fetch('http://localhost:3000/userId', {
