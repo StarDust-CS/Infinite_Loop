@@ -64,48 +64,33 @@ module.exports = {
         hypo: ticket.hypo,
       };
     };
-    // search db for student & fellow
-    // const findUser = (ticket) => {
-    //   console.log('called findUser');
-    //   console.log('current ticket: ', ticket);
-    //   const result = { ...ticket };
-    //   // find the student
-    //   db.any('SELECT * FROM users where _id=$1', ticket.studentID)
-    //     .then((data) => {
-    //       console.log('inside studentID');
-    //       result.studentFullName = `${data[0].first_name} ${data[0].last_name}`;
-    //       result.studentCohort = `${data[0].cohort}`;
-    //     })
-    //     .catch(err => console.error(err));
-
-    //   // find the fellow
-    //   db.any('SELECT * FROM users where _id=$1', ticket.fellowID)
-    //     .then((data) => {
-    //       console.log('inside fellowID');
-    //       result.fellowFullName = `${data[0].first_name} ${data[0].last_name}`;
-    //     })
-    //     .catch(err => console.error(err));
-
-    //   // find the closing ticket user
-    //   db.any('SELECT * FROM users where _id=$1', ticket.closedID)
-    //     .then((data) => {
-    //       console.log('inside closedID');
-    //       result.closedFullName = `${data[0].first_name} ${data[0].last_name}`;
-    //       // console.log('result: ', result);
-    //     })
-    //     .catch(err => console.error(err));
-    // };
 
     db.any('SELECT * FROM tickets JOIN users ON tickets.student_id=users._id')
       .then((data) => {
         const ticketsArr = [];
+        console.log('data: ', data);
         data.map(ticket => ticketsArr.push(formatTicket(ticket)));
         return ticketsArr;
       })
       .then((ticketsArr) => {
+        console.log('ticketsArr: ', ticketsArr);
         res.locals.ticketArray = ticketsArr;
         return next();
       })
       .catch(err => console.error(err));
+  },
+
+  updateTicket(req, res, next) {
+    const { status, ticketID, userID } = req.body;
+
+    if (status === 'CLOSED') {
+      db.any(`UPDATE tickets SET closer_id=${userID} WHERE ticket_id=${ticketID}`)
+        .then(() => next())
+        .catch(err => console.error(err));
+    } else if (status === 'IN PROGRESS') {
+      db.any(`UPDATE tickets SET fellow_id=${userID}, status='In Progress' WHERE ticket_id=${ticketID}`)
+        .then(() => next())
+        .catch(err => console.error(err));
+    }
   },
 };

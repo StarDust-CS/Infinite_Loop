@@ -33,7 +33,7 @@ app.post('/signup',
     res.status(200).json(res.locals.newUser);
   });
 
-/* [GET /ticket]: Serve up all tickets */
+/* ROUTING ON: Serve up all tickets */
 app.get('/ticket',
   ticketController.getTickets,
   // cookieController.setCookie,
@@ -46,6 +46,13 @@ app.post('/ticket',
   ticketController.addTicket,
   (req, res) => {
     res.status(200).json(res.locals.newTicket);
+  });
+
+/* ROUTING ON: User patches help ticket */
+app.patch('/ticket',
+  ticketController.updateTicket,
+  (req, res) => {
+    res.status(200).send({ msg: 'update made' });
   });
 
 // below unchanged from scratch project
