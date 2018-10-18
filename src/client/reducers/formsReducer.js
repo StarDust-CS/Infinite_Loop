@@ -11,7 +11,7 @@ const initialState = {
 };
 
 
-const ticketsReducer = (state = initialState, action) => {
+const formsReducer = (state = initialState, action) => {
 
   switch (action.type) {
     case types.SHOW_FORM:
@@ -63,9 +63,9 @@ const ticketsReducer = (state = initialState, action) => {
         const newState = JSON.parse(JSON.stringify(state));
 
         if (action.payload.event.target.name === 'cohort') {
-          newState.registerFormFields[action.payload.event.target.name] = Number(action.payload.event.target.value);
+          newState.registerFormFields[action.payload.target.name] = Number(action.payload.target.value);
         } else {
-          newState.registerFormFields[action.payload.event.target.name] = action.payload.event.target.value;
+          newState.registerFormFields[action.payload.target.name] = action.payload.target.value;
         }
 
         return {
@@ -116,7 +116,7 @@ const ticketsReducer = (state = initialState, action) => {
         //Copy initial state
         const newState = Object.assign({}, state);
 
-        newState.ticketFormFields[action.payload.event.target.name] = action.payload.event.target.value
+        newState.ticketFormFields[action.payload.target.name] = action.payload.target.value
 
         return {
           ...state,
@@ -139,4 +139,4 @@ const ticketsReducer = (state = initialState, action) => {
   }
 };
 
-export default ticketsReducer;
+export default formsReducer;
